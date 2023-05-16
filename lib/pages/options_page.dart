@@ -1,7 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 // used to hopefully reload app?
 import 'package:universal_html/html.dart' as html;
-import 'package:remempurr/options.dart';
+// import 'package:remempurr/options.dart';
 import 'package:flutter/material.dart';
 // custom
 import 'package:remempurr/helpers/graphics.dart';
@@ -31,7 +31,7 @@ class _OptionsPageState extends State<OptionsPage> {
     var cycleColorBtn = ElevatedButton(
       onPressed: () {
         Provider.of<ThemeModel>(context, listen: false).cycleColor();
-        saveOptions();
+        // saveOptions();
       },
       child: const Text("Cycle Color"),
     );
@@ -40,7 +40,7 @@ class _OptionsPageState extends State<OptionsPage> {
     var toggleModeBtn = ElevatedButton(
       onPressed: () {
         Provider.of<ThemeModel>(context, listen: false).toggleMode();
-        saveOptions();
+        // saveOptions();
       },
       child: const Text("Toggle Mode"),
     );
@@ -48,9 +48,9 @@ class _OptionsPageState extends State<OptionsPage> {
     // Define an ElevatedButton called resetBtn that calls resetOptions and toggleMode on the ThemeModel when pressed
     var resetBtn = ElevatedButton(
       onPressed: () {
-        resetOptions();
+        // resetOptions();
         Provider.of<ThemeModel>(context, listen: false).toggleMode();
-        saveOptions();
+        // saveOptions();
         // used with universal html import, refresh app hopefuly?
         html.window.location.reload();
       },

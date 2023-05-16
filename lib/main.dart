@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 // custom
 import 'package:remempurr/helpers/graphics.dart';
-import 'package:remempurr/helpers/todolist.dart';
+import 'package:remempurr/classes/todolist.dart';
 import 'package:remempurr/pages/todo_page.dart';
 import 'package:remempurr/classes/widgets.dart';
 import 'package:remempurr/options.dart';
 
 Future<void> main(List<String> args) async {
 	WidgetsFlutterBinding.ensureInitialized();
-	await loadOptions();
+	// await loadOptions();
   await initHive();
 	if (!hasError) {
 		loadTodoNotes();
@@ -24,7 +24,7 @@ Future<void> main(List<String> args) async {
 /* ========== MYAPP ========== */
 class MyApp extends StatelessWidget {
 	const MyApp({super.key});	
-
+	
 	// This widget is the root of your application.
 	@override
 	Widget build(BuildContext context) {
@@ -68,11 +68,25 @@ class HomePage extends StatefulWidget {
 	State<HomePage> createState() => _HomePageState();
 } // end HomePage
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 	
 	@override
 	void initState() {
 		super.initState();
+		WidgetsBinding.instance.addObserver(this);
+	}
+
+	@override
+	void dispose() {
+		WidgetsBinding.instance.removeObserver(this);
+		super.dispose();
+	}
+
+	@override
+	void didChangeAppLifecycleState(AppLifecycleState state) {
+		if (state == AppLifecycleState.paused) {
+			closeBox();
+		}
 	}
 	
 	
@@ -85,7 +99,7 @@ class _HomePageState extends State<HomePage> {
 			// Create an empty list to store the widgets
 			List<Widget> widgets = [];
 			// Iterate over the todo notes
-			for (int i = 0; i < todoNames.length; i++) {
+			for (int i = 1; i < todoNames.length; i++) {
 				// Create a button for viewing the note
 				var button = ElevatedButton(
 					onPressed: () {
@@ -100,7 +114,7 @@ class _HomePageState extends State<HomePage> {
 				var rmButton = ElevatedButton(
 					onPressed: () {
 						// Delete the selected note
-						setState(() { deleteTodo(todoNames[i]); });
+						setState(() { deleteTodoNote(todoNames[i]); });
 						// Navigate to the '/' route
 						// Navigator.pushReplacementNamed(context, '/');
 					},
@@ -143,7 +157,7 @@ class _HomePageState extends State<HomePage> {
 			Expanded(flex: 10, child: 
 				ElevatedButton(
 				onPressed: () {
-					todoNoteIndex = -1;
+					todoNoteIndex = 0;
 					Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
 				},
 				child: const Text("=ALL="),
@@ -156,11 +170,12 @@ class _HomePageState extends State<HomePage> {
 			onPressed: () {
 				// TODO
 				// Navigator.pushNamed(context, '/todo');
+				saveTodoNotes();
 			},
 			child: const Text("Timeline"),
 		);
 		// create a new todo button
-		var newTodoBtn = ElevatedButton(
+		var newTodoNoteBtn = ElevatedButton(
 			onPressed: () {
 				newTodoNote();
 				Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
@@ -194,7 +209,7 @@ class _HomePageState extends State<HomePage> {
 			spacer,
 			// add new todo button
 			Row(children: <Widget>[
-				Expanded(flex: 5, child: newTodoBtn),
+				Expanded(flex: 5, child: newTodoNoteBtn),
 			]),
 			spacer,
 			// add option button

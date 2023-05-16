@@ -18,24 +18,18 @@ class TodoListAdapter extends TypeAdapter<TodoList> {
     };
     return TodoList(
       name: fields[0] as String,
-      priority: (fields[1] as List).cast<Todo>(),
-      items: (fields[2] as List).cast<Todo>(),
-      complete: (fields[3] as List).cast<Todo>(),
+      todoItems: (fields[1] as List).cast<Todo>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, TodoList obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(2)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.priority)
-      ..writeByte(2)
-      ..write(obj.items)
-      ..writeByte(3)
-      ..write(obj.complete);
+      ..write(obj.todoItems);
   }
 
   @override
@@ -61,9 +55,9 @@ class TodoAdapter extends TypeAdapter<Todo> {
     };
     return Todo(
       item: fields[0] as String,
-      dueDate: fields[1] as DateTime?,
-      completed: fields[2] as DateTime?,
-      repeat: fields[3] as String?,
+      listName: fields[1] as String,
+      tags: (fields[2] as List).cast<String>(),
+      vars: (fields[3] as Map).cast<String, dynamic>(),
     );
   }
 
@@ -74,11 +68,11 @@ class TodoAdapter extends TypeAdapter<Todo> {
       ..writeByte(0)
       ..write(obj.item)
       ..writeByte(1)
-      ..write(obj.dueDate)
+      ..write(obj.listName)
       ..writeByte(2)
-      ..write(obj.completed)
+      ..write(obj.tags)
       ..writeByte(3)
-      ..write(obj.repeat);
+      ..write(obj.vars);
   }
 
   @override
