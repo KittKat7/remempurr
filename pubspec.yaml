@@ -43,6 +43,7 @@ dependencies:
   # path_provider:
   hive:
   hive_flutter:
+  date_time_picker:
 
 
 dev_dependencies:

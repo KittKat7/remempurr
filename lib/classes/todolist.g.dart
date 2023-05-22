@@ -6,30 +6,36 @@ part of 'todolist.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TodoListAdapter extends TypeAdapter<TodoList> {
+class TodoListAdapter extends TypeAdapter<ToDoList> {
   @override
   final int typeId = 0;
 
   @override
-  TodoList read(BinaryReader reader) {
+  ToDoList read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TodoList(
+    return ToDoList(
       name: fields[0] as String,
-      todoItems: (fields[1] as List).cast<Todo>(),
+      desc: fields[1] as String?,
+      todoItems: (fields[2] as List).cast<ToDo>(),
+      tags: (fields[3] as Map?)?.cast<String, String?>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, TodoList obj) {
+  void write(BinaryWriter writer, ToDoList obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.todoItems);
+      ..write(obj.desc)
+      ..writeByte(2)
+      ..write(obj.todoItems)
+      ..writeByte(3)
+      ..write(obj.tags);
   }
 
   @override
@@ -43,36 +49,33 @@ class TodoListAdapter extends TypeAdapter<TodoList> {
           typeId == other.typeId;
 }
 
-class TodoAdapter extends TypeAdapter<Todo> {
+class TodoAdapter extends TypeAdapter<ToDo> {
   @override
   final int typeId = 1;
 
   @override
-  Todo read(BinaryReader reader) {
+  ToDo read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Todo(
-      item: fields[0] as String,
+    return ToDo(
+      desc: fields[0] as String,
       listName: fields[1] as String,
-      tags: (fields[2] as List).cast<String>(),
-      vars: (fields[3] as Map).cast<String, dynamic>(),
+      tags: (fields[2] as Map?)?.cast<String, String?>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Todo obj) {
+  void write(BinaryWriter writer, ToDo obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.item)
+      ..write(obj.desc)
       ..writeByte(1)
       ..write(obj.listName)
       ..writeByte(2)
-      ..write(obj.tags)
-      ..writeByte(3)
-      ..write(obj.vars);
+      ..write(obj.tags);
   }
 
   @override

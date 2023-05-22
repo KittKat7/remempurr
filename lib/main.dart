@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/classes/todolist.dart';
 import 'package:remempurr/pages/todo_page.dart';
+import 'package:remempurr/pages/helper_pages.dart';
 import 'package:remempurr/classes/widgets.dart';
 import 'package:remempurr/options.dart';
 
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
 				// '/menu': (context) => const HomePage(title: title),
         '/todo': (context) => const TodoPage(title: "$title - Todo"),
 				'/about': (context) => const AboutPage(title: "$title - About"),
+				'/help': (context) => const HelpPage(title: "$title - Help"),
 				'/error': (context) => const ErrorPage(title: "$title - ERROR")
 				// '/options':(context) => const OptionsPage(title: "$title - Options"),
 			},
@@ -114,7 +116,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				var rmButton = ElevatedButton(
 					onPressed: () {
 						// Delete the selected note
-						setState(() { deleteTodoNote(todoNames[i]); });
+						confirmPopup(
+							context, 
+							"Confirm Delete",
+							"Pressing \"Confirm\" will **permanently** delete  \n\"${todoNames[i]}\"",
+							() => setState(() => deleteTodoNote(todoNames[i]) )
+						);
 						// Navigate to the '/' route
 						// Navigator.pushReplacementNamed(context, '/');
 					},
@@ -124,7 +131,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				widgets.addAll([
 					Row(children: <Widget>[
 						Expanded(flex: 10, child: button),
-						const Expanded(flex: 2, child: SizedBox()),
+						const Expanded(flex: 1, child: SizedBox()),
 						Expanded(flex: 4, child: rmButton),
 					]),
 					spacer,
@@ -162,7 +169,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				},
 				child: const Text("=ALL="),
 			)),
-			const Expanded(flex: 6, child: SizedBox()),
+			const Expanded(flex: 5, child: SizedBox()),
 		]),spacer];
 
     // create a timeline button
@@ -172,7 +179,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				// Navigator.pushNamed(context, '/todo');
 				saveTodoNotes();
 			},
-			child: const Text("Timeline"),
+			child: const Text("Timeline (not implemented yet)"),
 		);
 		// create a new todo button
 		var newTodoNoteBtn = ElevatedButton(
@@ -191,6 +198,24 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 		// 	},
 		// 	child: const Text("App Settings"),
 		// );
+
+		var importExportBtns = Row(children: [
+			Expanded(flex: 7, child: ElevatedButton(
+				onPressed: () {
+					// newTodoNote();
+					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
+				},
+				child: const Text("Import (WIP)"),
+			)),
+			const Expanded(flex: 1, child: SizedBox()),
+			Expanded(flex: 7, child: ElevatedButton(
+				onPressed: () {
+					// newTodoNote();
+					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
+				},
+				child: const Text("Export (WIP)"),
+			)),
+		]);
 		
 		// about page button
 		var aboutBtn = ElevatedButton(
@@ -218,6 +243,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			// ]),
 			// spacer,
 			// add about
+			importExportBtns,
+			spacer,
 			Row(children: <Widget>[
 				Expanded(flex: 5, child: aboutBtn),
 			])
@@ -241,91 +268,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				spacer,
 				column(),
 			]),
+			floatingActionButton: FloatingActionButton(
+				onPressed: () => Navigator.pushNamed(context, "/help"),
+				child: const Icon(Icons.help),
+			),
 		);
 	} // end build
 } // end _HomePageState
-
-/* ========== ABOUT PAGE ==========*/
-/* ABOUT PAGE */
-class AboutPage extends StatefulWidget {
-	const AboutPage({super.key, required this.title});
-	final String title;
-	@override
-	State<AboutPage> createState() => _AboutPageState();
-} // and AboutPage
-
-class _AboutPageState extends State<AboutPage> {
-	@override
-	Widget build(BuildContext context) {
-		return Scaffold(
-			appBar: AppBar(
-				title: Text(widget.title),
-			),
-			body: PaddedScroll(
-				context: context,
-				children: children(context),
-			)
-		);
-	}
-
-	List<Widget> children(BuildContext context) {
-		return <Widget>[
-			Text(
-				widget.title,
-				textAlign: TextAlign.center,
-				textScaleFactor: 2,
-				style: const TextStyle(fontWeight: FontWeight.bold),
-			),
-			// main about
-			readFileWidget('assets/texts/about.md'),
-			// spacer
-			spacer,
-			// back button
-			GoBackButton(context: context),
-		];
-	} // end build
-} // end _AboutPageState
-
-
-/* ========== ERROR PAGE ==========*/
-/* ABOUT PAGE */
-class ErrorPage extends StatefulWidget {
-	const ErrorPage({super.key, required this.title});
-	final String title;
-	@override
-	State<ErrorPage> createState() => _ErrorPageState();
-} // and AboutPage
-
-class _ErrorPageState extends State<ErrorPage> {
-	@override
-	Widget build(BuildContext context) {
-		return Scaffold(
-			appBar: AppBar(
-				title: Text(widget.title),
-			),
-			body: PaddedScroll(
-				context: context,
-				children: children(context),
-			)
-		);
-	}
-
-	List<Widget> children(BuildContext context) {
-		return <Widget>[
-			Text(
-				widget.title,
-				textAlign: TextAlign.center,
-				textScaleFactor: 2,
-				style: const TextStyle(fontWeight: FontWeight.bold),
-			),
-			// main about
-			Text("An Error has occured\n$thrownError"),
-			// spacer
-			spacer,
-			// back button
-			GoBackButton(context: context),
-		];
-	} // end build
-} // end _AboutPageState
-
 

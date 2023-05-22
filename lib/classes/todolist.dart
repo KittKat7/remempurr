@@ -3,58 +3,108 @@ import 'package:remempurr/options.dart';
 
 part 'todolist.g.dart';
 
-const String todoAllName = "=ALL=";
+const String allTodoList = "=ALL=";
+const String dueDate = "due";
+const String compDate = "done";
+
 
 @HiveType(typeId: 0)
-class TodoList extends HiveObject {
-	// name of todo list
-	// list<string> of prioreties
-	// list<string> of items
-	// list<string> completed
+class ToDoList extends HiveObject {
 	
 	@HiveField(0)
 	String name;
 
 	@HiveField(1)
-	List<Todo> todoItems;
+	String? desc;
 
-	TodoList({required this.name, required this.todoItems});
+	@HiveField(2)
+	List<ToDo> todoItems;
 
-	TodoList clone() {
-		return TodoList(
+	@HiveField(3)
+	Map<String, String?> tags = {};
+
+	ToDoList({required this.name, this.desc, required this.todoItems,
+		Map<String, String?>? tags}) : tags = tags ?? {};
+
+	ToDoList clone() {
+		return ToDoList(
 			name: name,
 			todoItems: List.from(todoItems),
 		);
 	}
 
-	TodoList prioritize(Todo item) {
-		item.tags.add("asap");
+	@override
+	String toString() {
+		String str = "### $name\n$desc";
+
+		for (String key in tags.keys) {
+			str += " ";
+			str += "#$key";
+			if (tags[key] != null ) str += ":${tags[key].toString()}";
+		}
+		str += "\n\n";
+
+		List<ToDo> priority = [];
+		List<ToDo> normal = [];
+		List<ToDo> completed = [];
+
+		for (ToDo td in todoItems) {
+			if (td.isComplete()) {
+				completed.add(td);
+			} else if (td.isPriority()) {
+				priority.add(td);
+			} else {
+				normal.add(td);
+			}
+		}
+
+		str += "#### Priority\n";
+		for (ToDo td in priority) {
+			str += "${td.toString()}\n";
+		} str += "\n";
+
+		str += "#### Checklist\n";
+		for (ToDo td in normal) {
+			str += "${td.toString()}\n";
+		} str += "\n";
+
+		str += "#### Completed\n";
+		for (ToDo td in completed) {
+			str += "${td.toString()}\n";
+		} str += "\n";
+
+		return str;
+	}
+
+	ToDoList prioritize(ToDo item) {
+		item.tags["ASAP"] = null;
 		return sortItems();
 	}
 
-	TodoList dePrioritize(Todo item) {
+	ToDoList dePrioritize(ToDo item) {
+		item.tags.remove("ASAP");
 		item.tags.remove("asap");
 		return sortItems();
 	}
 
-	TodoList complete(Todo item) {
+	ToDoList complete(ToDo item) {
 		item.setCompleted(DateTime.now());
 		return sortItems();
 	}
 
-	TodoList uncomplete(Todo item) {
-		item.setCompleted(null);
+	ToDoList incomplete(ToDo item) {
+		item.unsetCompleted();
 		return sortItems();
 	}
 
 	/// Sorts the items in the priority, items, and complete lists.
-	TodoList sortItems() {
-		List<Todo> tmp = List.from(todoItems);
-		List<Todo> priority = [];
-		List<Todo> normal = [];
-		List<Todo> completed = [];
+	ToDoList sortItems() {
+		List<ToDo> tmp = List.from(todoItems);
+		List<ToDo> priority = [];
+		List<ToDo> normal = [];
+		List<ToDo> completed = [];
 
-		for (Todo td in tmp) {
+		for (ToDo td in tmp) {
 			if (td.isComplete()) {
 				completed.add(td);
 			} else if (td.isPriority()) {
@@ -68,7 +118,7 @@ class TodoList extends HiveObject {
 		priority.sort((a, b) {
 			if (a.getDueDate() == null && b.getDueDate() == null) {
 				// If both items have no due date, sort them alphabetically.
-				return a.item.compareTo(b.item);
+				return a.desc.compareTo(b.desc);
 			} else if (a.getDueDate() == null) {
 				// If the first item has no due date, sort it after the second item.
 				return 1;
@@ -79,7 +129,7 @@ class TodoList extends HiveObject {
 				// If both items have a due date, sort them based on their due date.
 				if (a.getDueDate()!.compareTo(b.getDueDate()!) == 0) {
 					// If both items have the same due date, sort them alphabetically.
-					return a.item.compareTo(b.item);
+					return a.desc.compareTo(b.desc);
 				} else {
 					// Sort the items based on their due date.
 					return a.getDueDate()!.compareTo(b.getDueDate()!);
@@ -91,7 +141,7 @@ class TodoList extends HiveObject {
 		normal.sort((a, b) {
 			if (a.getDueDate() == null && b.getDueDate() == null) {
 				// If both items have no due date, sort them alphabetically.
-				return a.item.compareTo(b.item);
+				return a.desc.compareTo(b.desc);
 			} else if (a.getDueDate() == null) {
 				// If the first item has no due date, sort it after the second item.
 				return 1;
@@ -102,7 +152,7 @@ class TodoList extends HiveObject {
 				// If both items have a due date, sort them based on their due date.
 				if (a.getDueDate()!.compareTo(b.getDueDate()!) == 0) {
 					// If both items have the same due date, sort them alphabetically.
-					return a.item.compareTo(b.item);
+					return a.desc.compareTo(b.desc);
 				} else {
 					// Sort the items based on their due date.
 					return a.getDueDate()!.compareTo(b.getDueDate()!);
@@ -112,23 +162,23 @@ class TodoList extends HiveObject {
 
 		// Sort the items in the complete list based on their completion date.
 		completed.sort((a, b) {
-			if (a.vars[compDate] == null && b.vars[compDate] == null) {
+			if (a.tags[compDate] == null && b.tags[compDate] == null) {
 					// If both items have no completion date, sort them alphabetically.
-					return a.item.compareTo(b.item);
-				} else if (a.vars[compDate] == null) {
+					return a.desc.compareTo(b.desc);
+				} else if (a.tags[compDate] == null) {
 					// If the first item has no completion date, sort it after the second item.
 					return 1;
-				} else if (b.vars[compDate] == null) {
+				} else if (b.tags[compDate] == null) {
 					// If the second item has no completion date, sort it after the first item.
 					return -1;
 				} else {
 					// If both items have a completion date, sort them based on their completion date.
-					if (a.vars[compDate]!.compareTo(b.vars[compDate]!) == 0) {
+					if (a.tags[compDate]!.compareTo(b.tags[compDate]!) == 0) {
 						// If both items have the same completion date, sort them alphabetically.
-						return a.item.compareTo(b.item);
+						return a.desc.compareTo(b.desc);
 					} else {
-						// Sort the items based on their completion date.
-						return a.vars[compDate]!.compareTo(b.vars[compDate]!);
+						// Sort the items based on their completion date., inverted
+						return (b.tags[compDate]!.compareTo(a.tags[compDate]!));
 					} // end if else
 				} // end if elif elif else
 		}); // end sort
@@ -137,109 +187,128 @@ class TodoList extends HiveObject {
 		return this;
 	} // end sortItems
 
-	void removeItem(Todo item) {
+	void removeItem(ToDo item) {
 		todoItems.remove(item);
 	}
 
 
 }
 
-// class TodoListAdapter extends TypeAdapter<TodoList> {
-//   @override
-//   final int typeId = 0;
-
-//   @override
-//   TodoList read(BinaryReader reader) {
-//     final name = reader.readString();
-//     final priority = reader.read();
-//     final items = reader.read();
-//     final complete = reader.read();
-
-//     return TodoList(name: name, priority: priority, items: items, complete: complete);
-//   }
-
-//   @override
-//   void write(BinaryWriter writer, TodoList obj) {
-//     writer.writeString(obj.name);
-//     writer.write(obj.priority);
-//     writer.write(obj.items);
-//     writer.write(obj.complete);
-//   }
-// }
-
-var dueDate = "dueDate";
-var compDate = "completed";
 
 @HiveType(typeId: 1)
-class Todo extends HiveObject {
+class ToDo extends HiveObject {
 	@HiveField(0)
-	String item;
+	String desc;
 
 	@HiveField(1)
 	String listName;
 
-	@HiveField(2)
-	List<String> tags;
-
 	/// ```dart
 	/// {dueDate: DateTime, completed: DateTime, repeat: String}
 	/// ```
-	@HiveField(3)
-	Map<String, dynamic> vars;	
+	@HiveField(2)
+	Map<String, String?> tags = {};	
 
-	Todo({required this.item, required this.listName, required this.tags, required this.vars});
+	ToDo({required this.desc, required this.listName, Map<String, String?>? tags}) {
+		if (tags != null) {
+			this.tags = tags;
+		}
+	}
 
-	Todo clone() {
-		return Todo(
-			item: item,
+	ToDo clone() {
+		return ToDo(
+			desc: desc,
 			listName: listName,
 			tags: tags,
-			vars: vars,
 		);
 	}
 
-	Todo setItem(String item) {
-		this.item = item;
+	@override
+	String toString() {
+		String str = "";
+
+		str += isComplete()? "- [x] " : "- [ ] ";
+		str += desc;
+
+		for (String key in tags.keys) {
+			str += " ";
+			str += "#$key";
+			if (tags[key] != null ) str += ":${tags[key].toString()}";
+		}
+
+		return str;
+	}
+
+	ToDo setItem(String description) {
+		desc = description;
 		return this;
 	}
 
-	Todo setDueDate(DateTime? date) {
+	ToDo setDueDate(DateTime? date) {
 		if (date == null) {
-			if (vars.containsKey(dueDate)) {
-				vars.remove(dueDate);
+			if (tags.containsKey(dueDate)) {
+				tags.remove(dueDate);
 			}
 		} else {
-			vars[dueDate] = date;
+			tags[dueDate] = date.toString();
 		}
 		return this;
 	}
 
 	DateTime? getDueDate() {
-		return vars.containsKey(dueDate) ? vars[dueDate] : null;
+		return tags.containsKey(dueDate) ? DateTime.parse(tags[dueDate]!) : null;
 	}
 
-	Todo setCompleted(DateTime? date) {
-		if (date == null) {
-			if (vars.containsKey(compDate)) {
-				vars.remove(compDate);
-			}
-		} else {
-			vars[compDate] = date;
+	ToDo setCompleted(DateTime? date) {
+		tags[compDate] = date?.toIso8601String();
+		return this;
+	}
+
+	ToDo unsetCompleted() {
+		tags.remove(compDate);
+		return this;
+	}
+
+	bool isComplete() {
+		if (tags.containsKey(compDate)) {
+			return true;
 		}
+		return false;
+	}
+
+	DateTime? getCompDate() {
+		if (tags[compDate] == null) {
+			return null;
+		}
+		return DateTime.parse(tags[compDate]!);
+	}
+
+	bool isDue() {
+		if (tags.containsKey(dueDate)) {
+			return true;
+		}
+		return false;
+	}
+
+	ToDo setTag(String key, dynamic value) {
+		tags[key] = value;
 		return this;
 	}
 
-	Todo addTag(String value) {
-		tags.add(value);
-		return this;
-	}
-
-	Todo removeTag(String key) {
+	ToDo unsetTag(String key) {
 		tags.remove(key);
 		return this;
 	}
 
-	Todo setList(String value) {
+	dynamic getTag(String key) {
+		if (tags.containsKey(key)) {
+			return tags[key];
+		}
+		throw Error();
+	}
+
+
+	ToDo setList(String value) {
 		listName = value;
 		return this;
 	}
@@ -249,48 +318,27 @@ class Todo extends HiveObject {
 	}
 
 	bool isPriority() {
-		return tags.contains("asap");
+		return tags.containsKey("asap") || tags.containsKey("ASAP")? true : false;
 	}
 
-	bool isComplete() {
-		if (vars.containsKey(compDate)) {
-			return true;
-		}
-		return false;
+	ToDo setDesc(String str) {
+		desc = str;
+		return this;
+	}
+
+	String getDesc() {
+		return desc;
 	}
 }
-
-// class TodoAdapter extends TypeAdapter<Todo> {
-//   @override
-//   final int typeId = 1;
-
-//   @override
-//   Todo read(BinaryReader reader) {
-//     final item = reader.readString();
-//     final dueDate = reader.read();
-//     final completed = reader.read();
-//     final repeat = reader.readString();
-
-//     return Todo(item: item, dueDate: dueDate, completed: completed, repeat: repeat);
-//   }
-
-//   @override
-//   void write(BinaryWriter writer, Todo obj) {
-//     writer.writeString(obj.item);
-//     writer.write(obj.dueDate);
-//     writer.write(obj.completed);
-//     writer.write(obj.repeat);
-//   }
-// }
 
 
 /* =========== HELPERS =========== */
 
-Todo defTodoP = Todo(item: "Pet a cat NOW!", listName: "Default", tags: ["asap"], vars: {});
-Todo defTodoN = Todo(item: "Pet a cat.", listName: "Default", tags: [], vars: {});
-Todo defTodoC = Todo(item: "Make a note, Good Job :)", listName: "Default", tags: [], vars: {});
+ToDo defTodoP = ToDo(desc: "Pet a cat NOW!", listName: "Default", tags: {"asap":null});
+ToDo defTodoN = ToDo(desc: "Pet a cat.", listName: "Default", tags: {});
+ToDo defTodoC = ToDo(desc: "Make a note, Good Job :)", listName: "Default", tags: {});
 
-TodoList defTodoList = TodoList(
+ToDoList defTodoList = ToDoList(
 	name: "Default",
 	todoItems: [defTodoP.clone(), defTodoN.clone(), defTodoC.clone().setCompleted(DateTime.now())]
 );
@@ -311,8 +359,17 @@ Future<void> initHive() async {
 	try {
 		await Hive.openBox('remempurr');
 	} catch (e) {
-		thrownError = "InPrivate firefox window";
+		thrownError = "The note database has failed to load properly.";
 		hasError = true;
+		try {
+			Hive.deleteBoxFromDisk('remempurr');
+			await Hive.openBox('remempurr');
+			thrownError = "The note database has failed to load properly. The notes were reset, and"
+				" loading now works";
+		} catch (e) {
+			thrownError = "The note database has failed to load properly, twice.";
+		}
+		
 	}
 
 }
@@ -390,8 +447,20 @@ String getCurrentTodoName() {
 	return todoNames[todoNoteIndex];
 } // end getCurrentTodoName
 
-String todoNamesDupCheck(String name) {
-	if (todoNames.contains(name)) {
+bool listNameIsValid(String name) {
+	Set<String> invalid = {
+		"=all=",
+		"desc",
+		"tags",
+	};
+	if (invalid.contains(name.toLowerCase())) {
+		return false;
+	}
+	return true;
+}
+
+String listNameDupCheck(String name) {
+	if (todoNames.contains(name) || !listNameIsValid(name)) {
 		int count = 1;
 		while (todoNames.contains("$name $count")) {
 			count ++;
@@ -405,9 +474,9 @@ void newTodoNote({String? name}) {
 	var box = Hive.box('remempurr');
 	name ??= "New Todo";
 
-	name = todoNamesDupCheck(name);
+	name = listNameDupCheck(name);
 
-	box.put(name, TodoList(name: name, todoItems: []));
+	box.put(name, ToDoList(name: name, todoItems: []));
 	todoNames.add(name);
 
 	todoNames.sort((a, b) => a.compareTo(b));
@@ -415,34 +484,35 @@ void newTodoNote({String? name}) {
 	// return todoNames;
 } // end newTodoNote
 
-void renameTodoNote(String key, String newKey) {
+ToDoList renameTodoList(String key, String newKey) {
 	var box = Hive.box('remempurr');
 	if (newKey.length <= 1) {
-		return;
+		return getTodoList(getCurrentTodoName());
 	}
-	newKey = todoNamesDupCheck(newKey);
-	final TodoList copy = box.get(key).clone();
+	newKey = listNameDupCheck(newKey);
+	final ToDoList copy = box.get(key).clone();
 	
 	deleteTodoNote(key);
 	newTodoNote(name: newKey);
-	for (Todo k in copy.todoItems) {
+	for (ToDo k in copy.todoItems) {
 		k.listName = newKey;
 	}
 
 	box.put(newKey, copy);
+	return getTodoList(getCurrentTodoName());
 } // end renameTodoNote
 
-TodoList getTodoList(String name) {
+ToDoList getTodoList(String name) {
 	var box = Hive.box('remempurr');
 	// if requesting all
-	if (name == todoAllName) {
-		TodoList allTodos = TodoList(name: name, todoItems: []);
+	if (name == allTodoList) {
+		ToDoList allTodos = ToDoList(name: name, todoItems: []);
 		// for every list
 		for (String k in box.keys) {
-			TodoList tmp = box.get(k);
+			ToDoList tmp = box.get(k);
 			
 			// for every item
-			for (Todo td in tmp.todoItems) {
+			for (ToDo td in tmp.todoItems) {
 				allTodos.todoItems.add(td);
 			} // end for
 		} // end for every list
@@ -451,20 +521,22 @@ TodoList getTodoList(String name) {
 	return box.get(name);
 } // end getTodoList
 
-void saveTodoNotes({String? name, TodoList? note, Todo? item}) {
+void saveTodoNotes({String? name, ToDoList? note, ToDo? item}) {
 	var box = Hive.box('remempurr');
 
-	List<TodoList> lists = [];
+	// List<TodoList> lists = [];
 
-	if (name == todoAllName) {
+	if (name == allTodoList) {
 		if (item != null) {
 			box.put(item.listName, getTodoList(item.listName));
 		}
 		return;
 	}
 
-	if (name != null && note != null) {
-		box.put(name, note);
+	if (name != null) {
+		box.put(name, getTodoList(name));
+	} else if (note != null) {
+		box.put(note.name, note);
 	} // else {
 	// 	for (String n in todoNames) {
 	// 		if (n != todoAllName) {
@@ -484,85 +556,126 @@ void saveTodoNotes({String? name, TodoList? note, Todo? item}) {
 
 }
 
-void newTodo(String item) {
+void newTodo(String desc) {
+	if (desc.isEmpty) return;
 	String todoNoteName = getCurrentTodoName();
 	var box = Hive.box('remempurr');
-	TodoList tdl = box.get(todoNoteName);
-	tdl.todoItems.add(Todo(item: item, listName: todoNoteName, tags: [], vars: {}));
+	ToDoList tdl = box.get(todoNoteName);
+	tdl.todoItems.add(ToDo(desc: desc, listName: todoNoteName, tags: {}));
 	tdl.sortItems();
 	saveTodoNotes(name: todoNoteName, note: tdl);
 } // end newTodo
 
-void deleteTodo(Todo item) {
+void deleteTodo(ToDo item) {
 	var box = Hive.box('remempurr');
 
 	if (!todoNames.contains(item.listName)) {
 		String name = getCurrentTodoName();
-		if (name == todoAllName) {
+		if (name == allTodoList) {
 			return;
 		}
-		TodoList tdl = box.get(name);
+		ToDoList tdl = box.get(name);
 		tdl.removeItem(item);
 		saveTodoNotes(name: name, note: tdl);
-		return;
 	}
 
 	String? itemListName = item.getList();
 	
-	TodoList tdl = box.get(itemListName);
+	ToDoList tdl = box.get(itemListName);
 	tdl.removeItem(item);
 	saveTodoNotes(name: itemListName, note: tdl);
 	
 } // end newTodo
 
-TodoList prioritize(Todo item) {
+ToDoList prioritize(ToDo item) {
 	var box = Hive.box('remempurr');
 
 	String? itemListName = item.getList();
 	
-	TodoList tdl = box.get(itemListName);
+	ToDoList tdl = box.get(itemListName);
 	return tdl.prioritize(item);
 	
 }
 
-TodoList dePrioritize(Todo item) {
+ToDoList dePrioritize(ToDo item) {
 	var box = Hive.box('remempurr');
 
 	String? itemListName = item.getList();
 
-	TodoList tdl = box.get(itemListName);
+	ToDoList tdl = box.get(itemListName);
 	return tdl.dePrioritize(item);
 }
 
-TodoList togglePriority(Todo item) {
+ToDoList togglePriority(ToDo item) {
 	var box = Hive.box('remempurr');
 
 	String? itemListName = item.getList();
 	
-	TodoList tdl = box.get(itemListName);
-	return item.isPriority()? tdl.dePrioritize(item) : tdl.prioritize(item);
+	ToDoList tdl = box.get(itemListName);
+	var ret = item.isPriority()? tdl.dePrioritize(item) : tdl.prioritize(item);
+	saveTodoNotes();
+	return ret;
 	
 }
 
-TodoList complete(Todo item) {
+ToDoList complete(ToDo item) {
 	var box = Hive.box('remempurr');
 
 	String? itemListName = item.getList();
 
-	TodoList tdl = box.get(itemListName);
+	ToDoList tdl = box.get(itemListName);
 	return tdl.complete(item);
 }
 
-TodoList uncomplete(Todo item) {
+ToDoList uncomplete(ToDo item) {
 	var box = Hive.box('remempurr');
 
 	String? itemListName = item.getList();
 
-	TodoList tdl = box.get(itemListName);
-	return tdl.uncomplete(item);
+	ToDoList tdl = box.get(itemListName);
+	return tdl.incomplete(item);
+}
+
+ToDoList toggleComplete(ToDo td) {
+	var ret = td.isComplete()? uncomplete(td) : complete(td);
+	saveTodoNotes();
+	return ret;
 }
 
 void closeBox() {
 	saveTodoNotes();
 	Hive.close();
+}
+
+String parseToString() {
+	String parsedString = "";
+	
+	void addLine(String txt) {
+		parsedString += "$txt\n";
+	}
+	
+	addLine("## Remempurr");
+	addLine("#todo\n");
+	
+	for (String name in todoNames) {
+		if (name != allTodoList) {
+		  addLine(getTodoList(name).toString());
+		}
+	}
+	return parsedString;
+}
+
+void setDueDate(ToDo td, DateTime? dt) {
+	td.setDueDate(dt);
+	saveTodoNotes(name: td.listName);
+}
+
+void setComplete(ToDo td, DateTime? dt) {
+	td.setCompleted(dt);
+	saveTodoNotes(name: td.listName);
+}
+
+void setDesc(ToDo td, String desc) {
+	td.setDesc(desc);
+	saveTodoNotes(name: td.listName);
 }

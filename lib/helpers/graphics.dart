@@ -1,6 +1,8 @@
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:remempurr/classes/todolist.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 
@@ -83,16 +85,16 @@ Widget readFileWidget(String path) {
 } // end readFileWidget
 
 
-void showPopup(BuildContext context, Function(String) onConfirm) {
-  final TextEditingController _controller = TextEditingController();
+void enterTxtPopup(BuildContext context, String title, String def, Function(String) onConfirm) {
+  final TextEditingController controller = TextEditingController(text: def);
 
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('New Name'),
+        title: Text(title),
         content: TextField(
-          controller: _controller,
+          controller: controller,
           onChanged: (value) {
             // Handle text change
           },
@@ -109,7 +111,7 @@ void showPopup(BuildContext context, Function(String) onConfirm) {
             child: const Text('Confirm'),
             onPressed: () {
               // Handle confirm
-              String text = _controller.text;
+              String text = controller.text;
               onConfirm(text);
               Navigator.of(context).pop();
             },
@@ -120,4 +122,99 @@ void showPopup(BuildContext context, Function(String) onConfirm) {
   );
 }
 
+void showTodoListsPopup(BuildContext context, State state) {
 
+	var column = Column(
+		mainAxisSize: MainAxisSize.min,
+		children: [
+			for (String name in todoNames) Row(children: [Expanded(
+				child: TextButton(
+					style: ButtonStyle(
+						side: MaterialStateProperty.all(
+							const BorderSide(width: 1, color: Colors.black),
+						),
+					),
+					onPressed: () {
+						// ignore: invalid_use_of_protected_member
+						state.setState(() => setTodoNote(name));
+						// setTodoNote(name);
+						Navigator.of(context).pop();
+					},
+					child: Text(name),
+			))]),
+		],
+	);
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('New Name'),
+        content: column,
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              // Handle cancel
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void dateSelect(BuildContext context, Function(DateTime?) onConfirm) {
+	// final controller = TextEditingController();
+	DateTime? date;
+
+	showDatePicker(
+		context: context, 
+		initialDate: DateTime.now(), 
+		firstDate: DateTime.now().subtract(const Duration(days: 365 * 1000)),
+		lastDate: DateTime.now().add(const Duration(days: 365 * 1000)),
+	).then((value) {
+		if (value == null) return;
+		date = value;
+		showTimePicker(
+			context: context, 
+			initialTime: TimeOfDay.now()
+		).then((value) {
+			if (value == null) return;
+			date = DateTime(date!.year, date!.month, date!.day, value.hour, value.minute);
+			onConfirm(date);
+		});
+	});
+}
+
+
+void confirmPopup(BuildContext context, String title, String question, Function() onConfirm) {
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title:  Text(title),
+        content: MarkdownBody(data: question),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              // Handle cancel
+              Navigator.of(context).pop();
+            },
+          ),
+					TextButton(
+            child: const Text('Confirm'),
+            onPressed: () {
+              // Handle confirm
+							onConfirm();
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}

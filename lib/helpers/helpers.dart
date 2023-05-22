@@ -1,4 +1,5 @@
-String formatDate(DateTime date) {
+String formatDate(DateTime? date) {
+	if (date == null) return "null";
 	String formattedDate = 
 		"${date.year.toString().padLeft(4, '0')}-"
 		"${date.month.toString().padLeft(2, '0')}-"
