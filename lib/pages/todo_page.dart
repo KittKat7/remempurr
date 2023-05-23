@@ -5,16 +5,16 @@ import 'package:remempurr/classes/todolist.dart';
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/helpers/helpers.dart';
 
-class TodoPage extends StatefulWidget
+class ToDoPage extends StatefulWidget
 {
 	final String title;
-	const TodoPage({super.key, required this.title});
+	const ToDoPage({super.key, required this.title});
 	
 	@override
-	State<TodoPage> createState() => _TodoPageState();
-} // end TodoPagePage
+	State<ToDoPage> createState() => _ToDoPageState();
+} // end ToDoPagePage
 
-class _TodoPageState extends State<TodoPage>
+class _ToDoPageState extends State<ToDoPage>
 {
 	@override
 	Widget build(BuildContext context) {
@@ -29,11 +29,11 @@ class _TodoPageState extends State<TodoPage>
 		);
 
 		// new to-do button
-		var newTodoBtn = IconButton(
+		var newToDoBtn = IconButton(
 			icon: const Icon(Icons.add),
 			onPressed: () {
-				getCurrentTodoName() != allTodoList?
-					enterTxtPopup(context, "New Todo", "Todo", (text) {setState(() => newTodo(text));}) : null;
+				getCurrentToDoName() != allToDoList?
+					enterTxtPopup(context, "New ToDo", "ToDo", (text) {setState(() => newToDo(text));}) : null;
 			},
 		);
 		
@@ -41,13 +41,13 @@ class _TodoPageState extends State<TodoPage>
 		var titleText = GestureDetector(
 			onTap: () {
 				// showListPopup();
-				showTodoListsPopup(context, this);
-				// setState(() => showTodoListsPopup(context, this));
+				showToDoListsPopup(context, this);
+				// setState(() => showToDoListsPopup(context, this));
 			},
 			child: Padding(
 				padding: const EdgeInsets.all(15.0),
 				child: Text(
-					getCurrentTodoName(),
+					getCurrentToDoName(),
 					textAlign: TextAlign.center,
 					// style: const TextStyle(fontWeight: FontWeight.bold),
 				),
@@ -58,12 +58,12 @@ class _TodoPageState extends State<TodoPage>
 			icon: const Icon(Icons.settings),
 			onPressed: () {
 				enterTxtPopup(
-					context, 
-					"Rename", 
-					getCurrentTodoName(), 
-					(text) {setState(() => renameTodoList(getCurrentTodoName(), text));}
+					context,
+					"Rename",
+					getCurrentToDoName(),
+					(text) {setState(() => renameToDoList(getCurrentToDoName(), text));}
 				);
-				// setState(() => nextTodoNote());
+				// setState(() => nextToDoNote());
 				//Navigator.pushReplacementNamed(context, '/todo');
 			},
 		);
@@ -71,7 +71,7 @@ class _TodoPageState extends State<TodoPage>
 		var leftListBtn = IconButton(
 			icon: const Icon(Icons.keyboard_arrow_left),
 			onPressed: () {
-				setState(() => previousTodoNote());
+				setState(() => previousToDoNote());
 				//Navigator.pushReplacementNamed(context, '/todo');
 			},
 		);
@@ -79,7 +79,7 @@ class _TodoPageState extends State<TodoPage>
 		var rightListBtn = IconButton(
 			icon: const Icon(Icons.keyboard_arrow_right),
 			onPressed: () {
-				setState(() => nextTodoNote());
+				setState(() => nextToDoNote());
 				//Navigator.pushReplacementNamed(context, '/todo');
 			},
 		);
@@ -91,12 +91,12 @@ class _TodoPageState extends State<TodoPage>
 			children: [
 				leftListBtn,
 				titleText,
-				if (getCurrentTodoName() != allTodoList) todoListSettingsBtn,
+				if (getCurrentToDoName() != allToDoList) todoListSettingsBtn,
 				rightListBtn,
 			],
 		);
 		
-		var children = displayTodoItems(context, this);
+		var children = displayToDoItems(context, this);
 
 		// return the Scaffold
 		return Scaffold(
@@ -107,7 +107,7 @@ class _TodoPageState extends State<TodoPage>
 				automaticallyImplyLeading: false,
 				// add menu btn
 				leading: menuBtn,
-				actions: [ newTodoBtn, ],
+				actions: [ newToDoBtn, ],
 			),
 			body: PaddedScroll(
 				context: context,
@@ -119,14 +119,14 @@ class _TodoPageState extends State<TodoPage>
 			),
 		);
 	} // end build
-} // end _TodoPageState
+} // end _ToDoPageState
 
 
-List<Widget> displayTodoItems(BuildContext context, State state) {
+List<Widget> displayToDoItems(BuildContext context, State state) {
 	// create an empty list, this is what will be returned
 	List<Widget> todoItems = [];
 	// get the current todolist
-	ToDoList todoList = getTodoList(getCurrentTodoName());
+	ToDoList todoList = getToDoList(getCurrentToDoName());
 	// sort the items
 	todoList.sortItems();
 
@@ -153,7 +153,7 @@ List<Widget> displayTodoItems(BuildContext context, State state) {
 				// ignore: invalid_use_of_protected_member
 				state.setState(() {
 					// td.isComplete()? uncomplete(td) : complete(td);
-					saveTodoNotes(name: getCurrentTodoName(), note: toggleComplete(td), item: td);
+					saveToDoNotes(name: getCurrentToDoName(), note: toggleComplete(td), item: td);
 				});
 			})
 		); 
@@ -231,7 +231,7 @@ List<Widget> displayTodoItems(BuildContext context, State state) {
 				onPressed: () { 
 				// ignore: invalid_use_of_protected_member
 					state.setState(() {
-						saveTodoNotes(name: getCurrentTodoName(), note: togglePriority(td), item: td);
+						saveToDoNotes(name: getCurrentToDoName(), note: togglePriority(td), item: td);
 					});
 				}, icon: Icon(td.isPriority()? Icons.star : Icons.star_border),
 				padding: EdgeInsets.zero,
@@ -275,7 +275,7 @@ List<Widget> displayTodoItems(BuildContext context, State state) {
 					"Confirm Delete",
 					"Pressing \"Confirm\" will **permanently** delete  \n\"$shortDescription\"",
 					// ignore: invalid_use_of_protected_member
-					() {state.setState(() => deleteTodo(td));}
+					() {state.setState(() => deleteToDo(td));}
 				);
 			}, icon: const Icon(Icons.delete),
 			padding: EdgeInsets.zero,
@@ -320,5 +320,5 @@ List<Widget> displayTodoItems(BuildContext context, State state) {
 
 
 	return todoItems;
-} // end displayTodoItems
+} // end displayToDoItems
 

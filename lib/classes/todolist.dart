@@ -3,7 +3,7 @@ import 'package:remempurr/options.dart';
 
 part 'todolist.g.dart';
 
-const String allTodoList = "=ALL=";
+const String allToDoList = "=ALL=";
 const String dueDate = "due";
 const String compDate = "done";
 
@@ -334,13 +334,13 @@ class ToDo extends HiveObject {
 
 /* =========== HELPERS =========== */
 
-ToDo defTodoP = ToDo(desc: "Pet a cat NOW!", listName: "Default", tags: {"asap":null});
-ToDo defTodoN = ToDo(desc: "Pet a cat.", listName: "Default", tags: {});
-ToDo defTodoC = ToDo(desc: "Make a note, Good Job :)", listName: "Default", tags: {});
+ToDo defToDoP = ToDo(desc: "Pet a cat NOW!", listName: "Default", tags: {"asap":null});
+ToDo defToDoN = ToDo(desc: "Pet a cat.", listName: "Default", tags: {});
+ToDo defToDoC = ToDo(desc: "Make a note, Good Job :)", listName: "Default", tags: {});
 
-ToDoList defTodoList = ToDoList(
+ToDoList defToDoList = ToDoList(
 	name: "Default",
-	todoItems: [defTodoP.clone(), defTodoN.clone(), defTodoC.clone().setCompleted(DateTime.now())]
+	todoItems: [defToDoP.clone(), defToDoN.clone(), defToDoC.clone().setCompleted(DateTime.now())]
 );
 
 
@@ -352,9 +352,9 @@ Future<void> initHive() async {
 	// Initialize Hive
 	await Hive.initFlutter();
 
-	Hive.registerAdapter(TodoAdapter());
+	Hive.registerAdapter(ToDoAdapter());
 
-	Hive.registerAdapter(TodoListAdapter());
+	Hive.registerAdapter(ToDoListAdapter());
 
 	try {
 		await Hive.openBox('remempurr');
@@ -377,8 +377,8 @@ Future<void> initHive() async {
 /// Loads the to-do notes from the Hive box and returns them as a map.
 ///
 /// Returns a map of to-do notes where the key is the name of the note list and the value is
-/// the TodoList object.
-List<String> loadTodoNotes() {
+/// the ToDoList object.
+List<String> loadToDoNotes() {
 	// Get the Hive box
 	var box = Hive.box('remempurr');
 	
@@ -388,7 +388,7 @@ List<String> loadTodoNotes() {
 	// If the box is empty
 	if (keys.isEmpty) {
 		// Add a default note list
-		box.put("Default", defTodoList);
+		box.put("Default", defToDoList);
 		
 		// Update the keys
 		keys = box.keys.toList();
@@ -404,12 +404,12 @@ List<String> loadTodoNotes() {
 	todoNames.sort((a, b) => a.compareTo(b));
 	// Return the map of to-do notes
 	return todoNames;
-} // end loadTodoNotes
+} // end loadToDoNotes
 
 
 /// Deletes a to-do note with the given key from the Hive box named 'remempurr' and from the
 /// todoNotes map.
-void deleteTodoNote(String key) {
+void deleteToDoNote(String key) {
 	// Get the Hive box
 	var box = Hive.box('remempurr');
 
@@ -419,33 +419,33 @@ void deleteTodoNote(String key) {
 	// Delete the note from the todoNotes map
 	todoNames.remove(key);
 
-} // end deleteTodo
+} // end deleteToDo
 
 
-void setTodoNote(String key) {
+void setToDoNote(String key) {
 	todoNoteIndex = todoNames.indexOf(key);
 } // end setNote
 
-void nextTodoNote() {
+void nextToDoNote() {
 	todoNoteIndex ++;
 	if (todoNoteIndex >= todoNames.length) {
 		todoNoteIndex = 0;
 	}
-} // end nextTodoNote
+} // end nextToDoNote
 
-void previousTodoNote() {
+void previousToDoNote() {
 	todoNoteIndex --;
 	if (todoNoteIndex < 0) {
 		todoNoteIndex = todoNames.length - 1;
 	}
-} // end previousTodoNote
+} // end previousToDoNote
 
-String getCurrentTodoName() {
+String getCurrentToDoName() {
 	if (todoNoteIndex == 0) {
 		return "=ALL=";
 	}
 	return todoNames[todoNoteIndex];
-} // end getCurrentTodoName
+} // end getCurrentToDoName
 
 bool listNameIsValid(String name) {
 	Set<String> invalid = {
@@ -469,9 +469,9 @@ String listNameDupCheck(String name) {
 	return name;
 } // end todoNamesDupCheck
 
-void newTodoNote({String? name}) {
+void newToDoNote({String? name}) {
 	var box = Hive.box('remempurr');
-	name ??= "New Todo";
+	name ??= "New ToDo";
 
 	name = listNameDupCheck(name);
 
@@ -481,60 +481,60 @@ void newTodoNote({String? name}) {
 	todoNames.sort((a, b) => a.compareTo(b));
 	todoNoteIndex = todoNames.indexOf(name);
 	// return todoNames;
-} // end newTodoNote
+} // end newToDoNote
 
-ToDoList renameTodoList(String key, String newKey) {
+ToDoList renameToDoList(String key, String newKey) {
 	var box = Hive.box('remempurr');
 	if (newKey.length <= 1 || !listNameIsValid(newKey)) {
-		return getTodoList(getCurrentTodoName());
+		return getToDoList(getCurrentToDoName());
 	}
 	newKey = listNameDupCheck(newKey);
 	final ToDoList copy = box.get(key).clone();
 	copy.name = newKey;
 
-	deleteTodoNote(key);
-	newTodoNote(name: newKey);
+	deleteToDoNote(key);
+	newToDoNote(name: newKey);
 	for (ToDo k in copy.todoItems) {
 		k.listName = newKey;
 	}
 
 	box.put(newKey, copy);
-	return getTodoList(getCurrentTodoName());
-} // end renameTodoNote
+	return getToDoList(getCurrentToDoName());
+} // end renameToDoNote
 
-ToDoList getTodoList(String name) {
+ToDoList getToDoList(String name) {
 	var box = Hive.box('remempurr');
 	// if requesting all
-	if (name == allTodoList) {
-		ToDoList allTodos = ToDoList(name: name, todoItems: []);
+	if (name == allToDoList) {
+		ToDoList allToDos = ToDoList(name: name, todoItems: []);
 		// for every list
 		for (String k in box.keys) {
 			ToDoList tmp = box.get(k);
 			
 			// for every item
 			for (ToDo td in tmp.todoItems) {
-				allTodos.todoItems.add(td);
+				allToDos.todoItems.add(td);
 			} // end for
 		} // end for every list
-		return allTodos.sortItems();
+		return allToDos.sortItems();
 	} // end if
 	return box.get(name);
-} // end getTodoList
+} // end getToDoList
 
-void saveTodoNotes({String? name, ToDoList? note, ToDo? item}) {
+void saveToDoNotes({String? name, ToDoList? note, ToDo? item}) {
 	var box = Hive.box('remempurr');
 
-	// List<TodoList> lists = [];
+	// List<ToDoList> lists = [];
 
-	if (name == allTodoList) {
+	if (name == allToDoList) {
 		if (item != null) {
-			box.put(item.listName, getTodoList(item.listName));
+			box.put(item.listName, getToDoList(item.listName));
 		}
 		return;
 	}
 
 	if (name != null) {
-		box.put(name, getTodoList(name));
+		box.put(name, getToDoList(name));
 	} else if (note != null) {
 		box.put(note.name, note);
 	} // else {
@@ -542,11 +542,11 @@ void saveTodoNotes({String? name, ToDoList? note, ToDo? item}) {
 	// 		if (n != todoAllName) {
 	// 			print(todoNames);
 	// 			print(n);
-	// 			lists.add(getTodoList(n));
+	// 			lists.add(getToDoList(n));
 	// 		}
 	// 	}
 	// 	box.clear();
-	// 	for (TodoList tdl in lists) {
+	// 	for (ToDoList tdl in lists) {
 	// 		box.put(tdl.name, tdl);
 	// 	}
 	// }
@@ -556,36 +556,36 @@ void saveTodoNotes({String? name, ToDoList? note, ToDo? item}) {
 
 }
 
-void newTodo(String desc) {
+void newToDo(String desc) {
 	if (desc.isEmpty) return;
-	String todoNoteName = getCurrentTodoName();
+	String todoNoteName = getCurrentToDoName();
 	var box = Hive.box('remempurr');
 	ToDoList tdl = box.get(todoNoteName);
 	tdl.todoItems.add(ToDo(desc: desc, listName: todoNoteName, tags: {}));
 	tdl.sortItems();
-	saveTodoNotes(name: todoNoteName, note: tdl);
-} // end newTodo
+	saveToDoNotes(name: todoNoteName, note: tdl);
+} // end newToDo
 
-void deleteTodo(ToDo item) {
+void deleteToDo(ToDo item) {
 	var box = Hive.box('remempurr');
 
 	if (!todoNames.contains(item.listName)) {
-		String name = getCurrentTodoName();
-		if (name == allTodoList) {
+		String name = getCurrentToDoName();
+		if (name == allToDoList) {
 			return;
 		}
 		ToDoList tdl = box.get(name);
 		tdl.removeItem(item);
-		saveTodoNotes(name: name, note: tdl);
+		saveToDoNotes(name: name, note: tdl);
 	}
 
 	String? itemListName = item.getList();
 	
 	ToDoList tdl = box.get(itemListName);
 	tdl.removeItem(item);
-	saveTodoNotes(name: itemListName, note: tdl);
+	saveToDoNotes(name: itemListName, note: tdl);
 	
-} // end newTodo
+} // end newToDo
 
 ToDoList prioritize(ToDo item) {
 	var box = Hive.box('remempurr');
@@ -613,7 +613,7 @@ ToDoList togglePriority(ToDo item) {
 	
 	ToDoList tdl = box.get(itemListName);
 	var ret = item.isPriority()? tdl.dePrioritize(item) : tdl.prioritize(item);
-	saveTodoNotes();
+	saveToDoNotes();
 	return ret;
 	
 }
@@ -638,12 +638,12 @@ ToDoList uncomplete(ToDo item) {
 
 ToDoList toggleComplete(ToDo td) {
 	var ret = td.isComplete()? uncomplete(td) : complete(td);
-	saveTodoNotes();
+	saveToDoNotes();
 	return ret;
 }
 
 void closeBox() {
-	saveTodoNotes();
+	saveToDoNotes();
 	Hive.close();
 }
 
@@ -658,11 +658,11 @@ String parseToString() {
 	addLine("#todo\n");
 	
 	for (String name in todoNames) {
-		if (name != allTodoList) {
+		if (name != allToDoList) {
 			print(name);
-			print(getTodoList(name).name);
+			print(getToDoList(name).name);
 			print("\n");
-		  addLine(getTodoList(name).toString());
+		  addLine(getToDoList(name).toString());
 		}
 	}
 	return parsedString;
@@ -670,15 +670,15 @@ String parseToString() {
 
 void setDueDate(ToDo td, DateTime? dt) {
 	td.setDueDate(dt);
-	saveTodoNotes(name: td.listName);
+	saveToDoNotes(name: td.listName);
 }
 
 void setComplete(ToDo td, DateTime? dt) {
 	td.setCompleted(dt);
-	saveTodoNotes(name: td.listName);
+	saveToDoNotes(name: td.listName);
 }
 
 void setDesc(ToDo td, String desc) {
 	td.setDesc(desc);
-	saveTodoNotes(name: td.listName);
+	saveToDoNotes(name: td.listName);
 }

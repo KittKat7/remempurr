@@ -13,7 +13,7 @@ Future<void> main(List<String> args) async {
 	// await loadOptions();
   await initHive();
 	if (!hasError) {
-		loadTodoNotes();
+		loadToDoNotes();
 	}
 	// runApp(ChangeNotifierProvider<ThemeModel>(
 	// 		create: (context) => ThemeModel(),
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
 			routes: {
 				'/': (context) => const HomePage(title: title),
 				// '/menu': (context) => const HomePage(title: title),
-        '/todo': (context) => const TodoPage(title: "$title - Todo"),
+        '/todo': (context) => const ToDoPage(title: "$title - ToDo"),
 				'/about': (context) => const AboutPage(title: "$title - About"),
 				'/help': (context) => const HelpPage(title: "$title - Help"),
 				'/error': (context) => const ErrorPage(title: "$title - ERROR")
@@ -107,13 +107,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				var button = ElevatedButton(
 					onPressed: () {
 						// Set the currentNote to the selected note
-						setTodoNote(todoNames[i]);
+						setToDoNote(todoNames[i]);
 						// Navigate to the '/about' route
 						Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
 					},
 					child: Text(
-						todoNames[i] == getTodoList(todoNames[i]).name?
-							todoNames[i] : "${todoNames[i]} - ${getTodoList(todoNames[i]).name}"
+						todoNames[i] == getToDoList(todoNames[i]).name?
+							todoNames[i] : "${todoNames[i]} - ${getToDoList(todoNames[i]).name}"
 					),
 				);
 				// Create a button for deleting the note
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 							context, 
 							"Confirm Delete",
 							"Pressing \"Confirm\" will **permanently** delete  \n\"${todoNames[i]}\"",
-							() => setState(() => deleteTodoNote(todoNames[i]) )
+							() => setState(() => deleteToDoNote(todoNames[i]) )
 						);
 						// Navigate to the '/' route
 						// Navigator.pushReplacementNamed(context, '/');
@@ -181,18 +181,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			onPressed: () {
 				// TODO
 				// Navigator.pushNamed(context, '/todo');
-				saveTodoNotes();
+				saveToDoNotes();
 			},
 			child: const Text("Timeline (not implemented yet)"),
 		);
 		// create a new to-do button
-		var newTodoNoteBtn = ElevatedButton(
+		var newToDoNoteBtn = ElevatedButton(
 			onPressed: () {
-				newTodoNote();
+				newToDoNote();
 				Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
-				// setState(() { newTodoNote(); });
+				// setState(() { newToDoNote(); });
 			},
-			child: const Text("New Todo Note"),
+			child: const Text("New ToDo Note"),
 		);
 		
 		// options page button
@@ -206,7 +206,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 		var importExportBtns = Row(children: [
 			Expanded(flex: 7, child: ElevatedButton(
 				onPressed: () {
-					// newTodoNote();
+					// newToDoNote();
 					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
 					print("\n${parseToString()}");
 				},
@@ -215,9 +215,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			const Expanded(flex: 1, child: SizedBox()),
 			Expanded(flex: 7, child: ElevatedButton(
 				onPressed: () {
-					// newTodoNote();
+					// newToDoNote();
 					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
-					exportTodoLists();
+					exportToDoLists();
 				},
 				child: const Text("Export (WIP)"),
 			)),
@@ -240,7 +240,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			spacer,
 			// add new to-do button
 			Row(children: <Widget>[
-				Expanded(flex: 5, child: newTodoNoteBtn),
+				Expanded(flex: 5, child: newToDoNoteBtn),
 			]),
 			spacer,
 			// add option button

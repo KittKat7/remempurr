@@ -20,7 +20,7 @@ String formatDate(DateTime? date) {
 		return formattedDate;
 }
 
-void exportTodoLists() async {
+void exportToDoLists() async {
   String name = "Remempurr.md";
   String text = parseToString();
 	print("Exporting");

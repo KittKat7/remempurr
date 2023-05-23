@@ -6,7 +6,7 @@ part of 'todolist.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TodoListAdapter extends TypeAdapter<ToDoList> {
+class ToDoListAdapter extends TypeAdapter<ToDoList> {
   @override
   final int typeId = 0;
 
@@ -44,12 +44,12 @@ class TodoListAdapter extends TypeAdapter<ToDoList> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TodoListAdapter &&
+      other is ToDoListAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
 
-class TodoAdapter extends TypeAdapter<ToDo> {
+class ToDoAdapter extends TypeAdapter<ToDo> {
   @override
   final int typeId = 1;
 
@@ -84,7 +84,7 @@ class TodoAdapter extends TypeAdapter<ToDo> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TodoAdapter &&
+      other is ToDoAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

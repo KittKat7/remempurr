@@ -126,7 +126,7 @@ void enterTxtPopup(BuildContext context, String title, String hint, Function(Str
   );
 }
 
-void showTodoListsPopup(BuildContext context, State state) {
+void showToDoListsPopup(BuildContext context, State state) {
 
 	var column = Column(
 		mainAxisSize: MainAxisSize.min,
@@ -140,8 +140,8 @@ void showTodoListsPopup(BuildContext context, State state) {
 					),
 					onPressed: () {
 						// ignore: invalid_use_of_protected_member
-						state.setState(() => setTodoNote(name));
-						// setTodoNote(name);
+						state.setState(() => setToDoNote(name));
+						// setToDoNote(name);
 						Navigator.of(context).pop();
 					},
 					child: Text(name),
