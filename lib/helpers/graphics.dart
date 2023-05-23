@@ -26,11 +26,13 @@ bool isDark = true;
 Size getScreenSize(BuildContext context) {
 	Size size = MediaQuery.of(context).size;
 
-	double scaleW = size.width / 10;
-	double scaleH = size.height / 16;
+	double aspectW = 1;
+	// double aspectW = 10;
+	double aspectH = 1;
+	// double aspectH = 16;
 
-	double aspectW = 10;
-	double aspectH = 16;
+	double scaleW = size.width / aspectW;
+	double scaleH = size.height / aspectH;
 
 	// ignore: unused_local_variable
 	double drawW = scaleW / aspectW;
@@ -84,8 +86,8 @@ Widget readFileWidget(String path) {
 } // end readFileWidget
 
 
-void enterTxtPopup(BuildContext context, String title, String def, Function(String) onConfirm) {
-  final TextEditingController controller = TextEditingController(text: def);
+void enterTxtPopup(BuildContext context, String title, String hint, Function(String) onConfirm) {
+  final TextEditingController controller = TextEditingController();
 
   showDialog(
     context: context,
@@ -93,6 +95,9 @@ void enterTxtPopup(BuildContext context, String title, String def, Function(Stri
       return AlertDialog(
         title: Text(title),
         content: TextField(
+					decoration: InputDecoration(
+						hintText: hint
+					),
           controller: controller,
           onChanged: (value) {
             // Handle text change

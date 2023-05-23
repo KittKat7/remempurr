@@ -1,5 +1,5 @@
 # remempurr
-A reminder / todo app
+A reminder / to-do app
 
 flutter packages pub run build_runner build
 flutter clean && flutter pub get && flutter packages pub run build_runner build

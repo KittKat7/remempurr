@@ -374,9 +374,9 @@ Future<void> initHive() async {
 
 }
 
-/// Loads the todo notes from the Hive box and returns them as a map.
+/// Loads the to-do notes from the Hive box and returns them as a map.
 ///
-/// Returns a map of todo notes where the key is the name of the note list and the value is
+/// Returns a map of to-do notes where the key is the name of the note list and the value is
 /// the TodoList object.
 List<String> loadTodoNotes() {
 	// Get the Hive box
@@ -402,12 +402,12 @@ List<String> loadTodoNotes() {
 	} // end for
 	// sort alphabetically
 	todoNames.sort((a, b) => a.compareTo(b));
-	// Return the map of todo notes
+	// Return the map of to-do notes
 	return todoNames;
 } // end loadTodoNotes
 
 
-/// Deletes a todo note with the given key from the Hive box named 'remempurr' and from the
+/// Deletes a to-do note with the given key from the Hive box named 'remempurr' and from the
 /// todoNotes map.
 void deleteTodoNote(String key) {
 	// Get the Hive box
@@ -450,8 +450,7 @@ String getCurrentTodoName() {
 bool listNameIsValid(String name) {
 	Set<String> invalid = {
 		"=all=",
-		"desc",
-		"tags",
+		"description", // contains {desc: "description", other tags...}
 	};
 	if (invalid.contains(name.toLowerCase())) {
 		return false;
@@ -486,12 +485,13 @@ void newTodoNote({String? name}) {
 
 ToDoList renameTodoList(String key, String newKey) {
 	var box = Hive.box('remempurr');
-	if (newKey.length <= 1) {
+	if (newKey.length <= 1 || !listNameIsValid(newKey)) {
 		return getTodoList(getCurrentTodoName());
 	}
 	newKey = listNameDupCheck(newKey);
 	final ToDoList copy = box.get(key).clone();
-	
+	copy.name = newKey;
+
 	deleteTodoNote(key);
 	newTodoNote(name: newKey);
 	for (ToDo k in copy.todoItems) {
@@ -659,6 +659,9 @@ String parseToString() {
 	
 	for (String name in todoNames) {
 		if (name != allTodoList) {
+			print(name);
+			print(getTodoList(name).name);
+			print("\n");
 		  addLine(getTodoList(name).toString());
 		}
 	}

@@ -28,7 +28,7 @@ class _TodoPageState extends State<TodoPage>
 			},
 		);
 
-		// new todo button
+		// new to-do button
 		var newTodoBtn = IconButton(
 			icon: const Icon(Icons.add),
 			onPressed: () {
@@ -288,18 +288,32 @@ List<Widget> displayTodoItems(BuildContext context, State state) {
 			checkbox,
 			star,
 			description,
-			dueDate,
-			compDate,
+			// dueDate,
+			// compDate,
 			delBtn,
 		]);
 
+		var column = Container(
+			decoration: BoxDecoration(
+				border: Border.all(color: Colors.blueAccent, width: 2),
+				borderRadius: BorderRadius.circular(10)
+			),
+			margin: EdgeInsets.only(top: 2, bottom: 2),
+			child: Container(margin: EdgeInsets.only(top: 2, bottom: 2), child: Column(
+				children: [
+					row,
+					if (toLong) Row(children: [const Expanded(flex: 1, child: SizedBox()), fullDescription]),
+					Row(children: [const Expanded(flex: 1, child: SizedBox()), dueDate, compDate,])
+				],
+			))
+		);
+		
 		todoItems.add(
-			row
+			column
 		);
 
-		if (toLong) {
-			todoItems.add(Row(children: [const Expanded(flex: 1, child: SizedBox()), fullDescription]));
-		}
+
+		
 
 
 	}

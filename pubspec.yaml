@@ -40,11 +40,12 @@ dependencies:
   universal_html:
   provider:
   shared_preferences:
-  # path_provider:
-  hive:
-  hive_flutter:
-  date_time_picker:
-
+  hive: # used for current note database
+  hive_flutter: # used for current note database
+  path_provider: # used for saving files, mobile, desktop?
+  file_selector: # selecting file locations for save / load files, desktop
+  # file_picker: # selecting file locations for save / load files, mobile
+  permission_handler:
 
 dev_dependencies:
   flutter_test:
@@ -57,7 +58,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
-  hive_generator: # used for storing the todo notes in hive
+  hive_generator: # used for storing the to-do notes in hive
   build_runner: # same as above
 
 # For information on the generic Dart part of this file, see the

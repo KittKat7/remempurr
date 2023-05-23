@@ -4,7 +4,7 @@ ___
 
 ### **"=ALL=" button**
 
-The "=ALL=" button will take you to a page that shows you all the todo items you have regardless of what list they are in.
+The "=ALL=" button will take you to a page that shows you all the to-do items you have regardless of what list they are in.
 
 ### **List buttons**
 
@@ -16,9 +16,9 @@ Next to the list buttons, there will be a trash button. This button will **perma
 
 WIP (Work In Progress)
 
-### **"New To Do list"**
+### **"New To-Do list"**
 
-Creates a new list to add new todo items.
+Creates a new list to add new to-do items.
 
 ### **"Import"/"Export"**
 
@@ -30,7 +30,7 @@ Displays a page containing information about the app.
 
 ___
 
-## **ToDo List Page**
+## **To-Do List Page**
 
 ### **Top Bar**
 
@@ -52,7 +52,7 @@ On either side of the name and settings/gear button, there are arrow buttons. Th
 
 On the far left of the top bar, there is an icon with three horizontal lines. This button will bring you back to the home / menu page.
 
-#### **Add New To Do button**
+#### **Add New To-Do button**
 
 On the far right side of the top bar, there is a + (plus) button. This button will create a new to-do item and add it to the current list.
 

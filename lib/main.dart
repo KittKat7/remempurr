@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // custom
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/classes/todolist.dart';
+import 'package:remempurr/helpers/helpers.dart';
 import 'package:remempurr/pages/todo_page.dart';
 import 'package:remempurr/pages/helper_pages.dart';
 import 'package:remempurr/classes/widgets.dart';
@@ -94,13 +95,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 	
 	@override
 	Widget build(BuildContext context) {
-		/// Generates a list of widgets for displaying todo note buttons.
-		/// Each todo button is displayed as a row with two buttons: one for viewing the note and one for
+		/// Generates a list of widgets for displaying to-do note buttons.
+		/// Each to-do button is displayed as a row with two buttons: one for viewing the note and one for
 		/// deleting the note.
 		List<Widget> todoButtons() {
 			// Create an empty list to store the widgets
 			List<Widget> widgets = [];
-			// Iterate over the todo notes
+			// Iterate over the to-do notes
 			for (int i = 1; i < todoNames.length; i++) {
 				// Create a button for viewing the note
 				var button = ElevatedButton(
@@ -110,7 +111,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 						// Navigate to the '/about' route
 						Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
 					},
-					child: Text(todoNames[i]),
+					child: Text(
+						todoNames[i] == getTodoList(todoNames[i]).name?
+							todoNames[i] : "${todoNames[i]} - ${getTodoList(todoNames[i]).name}"
+					),
 				);
 				// Create a button for deleting the note
 				var rmButton = ElevatedButton(
@@ -181,7 +185,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			},
 			child: const Text("Timeline (not implemented yet)"),
 		);
-		// create a new todo button
+		// create a new to-do button
 		var newTodoNoteBtn = ElevatedButton(
 			onPressed: () {
 				newTodoNote();
@@ -204,6 +208,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				onPressed: () {
 					// newTodoNote();
 					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
+					print("\n${parseToString()}");
 				},
 				child: const Text("Import (WIP)"),
 			)),
@@ -212,6 +217,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				onPressed: () {
 					// newTodoNote();
 					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
+					exportTodoLists();
 				},
 				child: const Text("Export (WIP)"),
 			)),
@@ -232,7 +238,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				Expanded(flex: 5, child: timelineBtn),
 			]),
 			spacer,
-			// add new todo button
+			// add new to-do button
 			Row(children: <Widget>[
 				Expanded(flex: 5, child: newTodoNoteBtn),
 			]),
