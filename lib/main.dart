@@ -176,15 +176,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			const Expanded(flex: 5, child: SizedBox()),
 		]),spacer];
 
-    // create a timeline button
-		var timelineBtn = ElevatedButton(
-			onPressed: () {
-				// TODO
-				// Navigator.pushNamed(context, '/todo');
-				saveToDoNotes();
-			},
-			child: const Text("Timeline (not implemented yet)"),
-		);
+		// // create a timeline button
+		// var timelineBtn = ElevatedButton(
+		// 	onPressed: () {
+		// 		// TODO
+		// 		// Navigator.pushNamed(context, '/todo');
+		// 		saveToDoNotes();
+		// 	},
+		// 	child: const Text("Timeline (not implemented yet)"),
+		// );
+
 		// create a new to-do button
 		var newToDoNoteBtn = ElevatedButton(
 			onPressed: () {
@@ -233,11 +234,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 		
 		// display the buttons
 		List<Widget> buttonWidgets = [
-      // add timeline button
-      Row(children: <Widget>[
-				Expanded(flex: 5, child: timelineBtn),
-			]),
-			spacer,
+			// // add timeline button
+			// Row(children: <Widget>[
+			// 	Expanded(flex: 5, child: timelineBtn),
+			// ]),
+			// spacer,
 			// add new to-do button
 			Row(children: <Widget>[
 				Expanded(flex: 5, child: newToDoNoteBtn),
