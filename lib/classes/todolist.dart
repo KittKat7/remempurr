@@ -406,21 +406,28 @@ Future<void> initHive() async {
 void loadToDoNotes() {
 	// Get the Hive box
 	var box = Hive.box('remempurr');
-		
+	
+	if (box.keys.toList().contains("version") && !box.keys.toList().contains("tags")) {
+		box.delete("version");
+		box.put("tags", <String, String>{"version": saveFormetVersion.toString()});
+	}
+
 	// TODO
-	if (!box.keys.toList().contains("version")) {
+	if (box.keys.toList().isNotEmpty && !box.keys.toList().contains("tags")) {
 		print(box.toMap());
 		toDoLists = box.toMap().cast<String, ToDoList>();
 		toDoLists[keyAll] = ToDoList(name: keyAll, todoItems: []);
 		box.deleteAll(box.keys);
 		saveToDoLists();
-		box.put("version", saveFormetVersion);
+		box.put("tags", <String, String>{"version": saveFormetVersion.toString()});
 	}
+	
 	
 	// If the box is empty
 	if (box.keys.toList().isEmpty || !box.containsKey("remempurr")) {
 		// Add a default note list
 		box.put("remempurr", <String, ToDoList>{});
+		box.put("tags", <String, String>{});
 		
 	} // end if
 	toDoLists = box.get("remempurr").cast<String, ToDoList>();
