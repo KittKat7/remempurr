@@ -387,6 +387,7 @@ List<String> loadToDoNotes() {
 	
 	// If the box is empty
 	if (keys.isEmpty) {
+		// box.put("", defToDoList);
 		// Add a default note list
 		box.put("Default", defToDoList);
 		
@@ -394,7 +395,7 @@ List<String> loadToDoNotes() {
 		keys = box.keys.toList();
 	} // end if
 
-	todoNames = ["=ALL=",];
+	todoNames = [];
 	// Iterate over the keys
 	for (String k in keys) {
 		// add the key to the list
@@ -450,7 +451,7 @@ String getCurrentToDoName() {
 bool listNameIsValid(String name) {
 	Set<String> invalid = {
 		"=all=",
-		"description", // contains {desc: "description", other tags...}
+		"{desc}", // contains {desc: "description", other tags...}
 	};
 	if (invalid.contains(name.toLowerCase())) {
 		return false;
@@ -469,9 +470,9 @@ String listNameDupCheck(String name) {
 	return name;
 } // end todoNamesDupCheck
 
-void newToDoNote({String? name}) {
+void newToDoList({String? name}) {
 	var box = Hive.box('remempurr');
-	name ??= "New ToDo";
+	name ??= "New To-Do List";
 
 	name = listNameDupCheck(name);
 
@@ -493,7 +494,7 @@ ToDoList renameToDoList(String key, String newKey) {
 	copy.name = newKey;
 
 	deleteToDoNote(key);
-	newToDoNote(name: newKey);
+	newToDoList(name: newKey);
 	for (ToDo k in copy.todoItems) {
 		k.listName = newKey;
 	}

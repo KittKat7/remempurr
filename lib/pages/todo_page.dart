@@ -147,7 +147,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 
 	Container container(Widget child) {
 		return Container(
-			margin: EdgeInsets.all(10),
+			margin: const EdgeInsets.all(10),
 			child: child,
 		);
 	}
@@ -173,48 +173,27 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		}
 
 		// checkbox
-		var checkbox = Expanded(
-			flex: 1,
-			child: Checkbox(value: td.isComplete(), onChanged: (bool? value) { 
+		var checkbox = Checkbox(value: td.isComplete(), onChanged: (bool? value) { 
 				// ignore: invalid_use_of_protected_member
 				state.setState(() {
 					// td.isComplete()? uncomplete(td) : complete(td);
 					saveToDoNotes(name: getCurrentToDoName(), note: toggleComplete(td), item: td);
 				});
-			})
+			}
 		); 
 
 		// description
 		bool toLong = td.desc.length >= 32;
 		String shortDescription = toLong? td.desc.substring(0, 29) : td.desc;
-		var style = td.isPriority()?
-			const TextStyle(fontWeight: FontWeight.bold) : const TextStyle(fontWeight: FontWeight.normal);
-		var description = Expanded(
-			flex: 5,
-			child: GestureDetector(
-				onTap: () => enterTxtPopup(
-					context, 
-					"Change To Do", 
-					// ignore: invalid_use_of_protected_member
-					(text) {state.setState(() => setDesc(td, text));},
-					def: td.getDesc(), 
-				),
-				child: Text(toLong? "$shortDescription..." : td.desc, style: style)
-			)
-		);
-
-		var fullDescription = Expanded(
-			flex: 14,
-			child: GestureDetector(
-				onTap: () => enterTxtPopup(
-					context, 
-					"Change To Do", 
-					// ignore: invalid_use_of_protected_member
-					(text) {state.setState(() => setDesc(td, text));},
-					def: td.getDesc(),
-				),
-				child: Text(td.desc)
-			)
+		var description = GestureDetector(
+			onTap: () => enterTxtPopup(
+				context, 
+				"Change To Do", 
+				// ignore: invalid_use_of_protected_member
+				(text) {state.setState(() => setDesc(td, text));},
+				def: td.getDesc(),
+			),
+			child: MarkdownBody(data: "${td.isPriority()? "**" : ""}${td.desc}${td.isPriority()? "**" : ""}")
 		);
 
 		// dueDate
@@ -222,12 +201,11 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 			DateTime.now().compareTo(td.getDueDate()!) > -1? true : false : false;
 		TextStyle dueDateTxtStyle = TextStyle(
 			color: isLate? Colors.red : null,
-			fontWeight: isLate? FontWeight.bold : null
+			fontWeight: isLate? FontWeight.bold : null,
+			fontStyle: FontStyle.italic,
 			);
 		String formattedDueDate = td.isDue()? formatDate(td.getDueDate()!) : "";
-		var dueDate = Expanded(
-			flex: 3, 
-			child: GestureDetector(
+		var dueDate = GestureDetector(
 				onTap: () { 
 					dateSelect(
 						context, 
@@ -248,12 +226,36 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					td.isDue()? "Due: $formattedDueDate" : "Due",
 					style: dueDateTxtStyle,
 				),
-		));
+		);
+
+		// compDate
+		String formattedCompDate = td.isComplete()? formatDate(td.getCompDate()) : "";
+		if (formattedCompDate == "null") formattedCompDate = "N/A";
+		var compDate = GestureDetector(
+			onTap: () { 
+				dateSelect(
+					context, 
+					// ignore: invalid_use_of_protected_member
+					(p0) => state.setState(() => setComplete(td, p0))
+				);
+			},
+			onLongPress: () {
+				confirmPopup(
+					context, 
+					"Remove Completed Date", 
+					"Pressing \"Confirm\" will remove the completed date for  \n\"$shortDescription\"", 
+					// ignore: invalid_use_of_protected_member
+					() => state.setState(() => setComplete(td, null))
+				);
+			},
+			child: Text(
+				td.isComplete()? "Done: $formattedCompDate" : "Done",
+				style: const TextStyle(fontStyle: FontStyle.italic),
+			),
+		);
 
 		// star button
-		var star = Expanded(
-			flex: 1,
-			child: IconButton(
+		var star = IconButton(
 				onPressed: () { 
 				// ignore: invalid_use_of_protected_member
 					state.setState(() {
@@ -261,39 +263,10 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					});
 				}, icon: Icon(td.isPriority()? Icons.star : Icons.star_border),
 				padding: EdgeInsets.zero,
-		)); // end star button
-
-		// compDate
-		String formattedCompDate = td.isComplete()? formatDate(td.getCompDate()) : "";
-		if (formattedCompDate == "null") formattedCompDate = "N/A";
-		var compDate = Expanded(
-			flex: 3, 
-			child: GestureDetector(
-				onTap: () { 
-					dateSelect(
-						context, 
-						// ignore: invalid_use_of_protected_member
-						(p0) => state.setState(() => setComplete(td, p0))
-					);
-				},
-				onLongPress: () {
-				  confirmPopup(
-						context, 
-						"Remove Completed Date", 
-						"Pressing \"Confirm\" will remove the completed date for  \n\"$shortDescription\"", 
-						// ignore: invalid_use_of_protected_member
-						() => state.setState(() => setComplete(td, null))
-					);
-				},
-				child: Text(
-					td.isComplete()? "Done: $formattedCompDate" : "Done"
-				),
-		));
+		); // end star button
 		
 		// delete button
-		var delBtn = Expanded(
-			flex: 1,
-			child: IconButton(
+		var delBtn = IconButton(
 				onPressed: () {
 				// ignore: invalid_use_of_protected_member
 				confirmPopup(
@@ -303,45 +276,56 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					// ignore: invalid_use_of_protected_member
 					() {state.setState(() => deleteToDo(td));}
 				);
-			}, icon: const Icon(Icons.delete),
+			}, icon: const Icon(Icons.settings),
 			padding: EdgeInsets.zero,
-		)); // end delete button
+		); // end delete button
 
+		var descCol = Column(
+			children: [
+				Row(
+					children: [
+						description,
+					]
+				),
+				Row(
+					children: [
+						// Expanded(flex: 4, child: dueDate),
+						// Expanded(flex: 4, child: compDate),
+						// Expanded(flex: 7, child: SizedBox())
+						dueDate,
+						const Text(" - "),
+						compDate,
+					],
+				)
+			]
+		);
 
+		var itemRow = Row(
+			children: [
+				Expanded(flex: 1, child: checkbox),
+				Expanded(flex: 1, child: star),
+				Expanded(flex: 12, child: descCol),
+				Expanded(flex: 1, child: delBtn)
+			]
+		);
 
-
-		var row = Row(children: <Widget>[
-			checkbox,
-			star,
-			description,
-			// dueDate,
-			// compDate,
-			delBtn,
-		]);
-
-		var column = Container(
-			decoration: BoxDecoration(
-				border: Border.all(color: Theme.of(context).colorScheme.onBackground, width: 2),
-				borderRadius: BorderRadius.circular(10),
-				color: Theme.of(context).canvasColor,
-				boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 5, spreadRadius: 3)]
-			),
-			margin: EdgeInsets.only(top: 2, bottom: 2),
-			child: Container(margin: EdgeInsets.only(top: 2, bottom: 2), child: Column(
-				children: [
-					row,
-					if (toLong) Row(children: [const Expanded(flex: 1, child: SizedBox()), fullDescription]),
-					Row(children: [const Expanded(flex: 1, child: SizedBox()), dueDate, compDate,])
-				],
-			))
+		var item = GestureDetector(
+			onLongPress: () => confirmPopup(context, "Hi", "This is a test...", () => null),
+			child: Container(
+				decoration: BoxDecoration(
+					border: Border.all(color: Theme.of(context).colorScheme.onBackground, width: 2),
+					borderRadius: BorderRadius.circular(10),
+					color: Theme.of(context).canvasColor,
+					boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 5, spreadRadius: 3)]
+				),
+				margin: const EdgeInsets.only(top: 2, bottom: 2),
+				child: Container(margin: const EdgeInsets.only(top: 2, bottom: 2), child: itemRow)
+			)
 		);
 		
 		todoItems.add(
-			column
+			item
 		);
-
-
-		
 
 
 	} // end for

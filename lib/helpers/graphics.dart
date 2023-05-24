@@ -116,8 +116,8 @@ void enterTxtPopup(BuildContext context, String title, Function(String) onConfir
             onPressed: () {
               // Handle confirm
               String text = controller.text;
-              onConfirm(text);
               Navigator.of(context).pop();
+							onConfirm(text);
             },
           ),
         ],

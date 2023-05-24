@@ -106,7 +106,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			// Create an empty list to store the widgets
 			List<Widget> widgets = [];
 			// Iterate over the to-do notes
-			for (int i = 1; i < todoNames.length; i++) {
+			for (int i = 0; i < todoNames.length; i++) {
+				print(todoNames);
+				if (!listNameIsValid(todoNames[i])) {
+					continue;
+				}
 				// Create a button for viewing the note
 				var button = ElevatedButton(
 					onPressed: () {
@@ -193,11 +197,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 		// create a new to-do button
 		var newToDoNoteBtn = ElevatedButton(
 			onPressed: () {
-				newToDoNote();
-				Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
+				
+				enterTxtPopup(context, title, (p0) {
+					newToDoList(name: p0);
+					// setState(() => renameToDoList(getCurrentToDoName(), p0));
+					Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
+				}, hint: "To-Do Name");
 				// setState(() { newToDoNote(); });
 			},
-			child: const Text("New ToDo Note"),
+			child: const Text("New To-Do Note"),
 		);
 		
 		// options page button
