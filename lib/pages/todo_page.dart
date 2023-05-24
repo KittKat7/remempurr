@@ -33,7 +33,7 @@ class _ToDoPageState extends State<ToDoPage>
 		var newToDoBtn = IconButton(
 			icon: const Icon(Icons.add),
 			onPressed: () {
-				getCurrentToDoName() != allToDoList?
+				getCurrentList() != keyAll?
 					enterTxtPopup(context, "New ToDo", (text) {setState(() => newToDo(text));}, hint: "Something to do") : null;
 			},
 		);
@@ -48,7 +48,7 @@ class _ToDoPageState extends State<ToDoPage>
 			child: Padding(
 				padding: const EdgeInsets.all(15.0),
 				child: Text(
-					getCurrentToDoName(),
+					getCurrentList(),
 					textAlign: TextAlign.center,
 					// style: const TextStyle(fontWeight: FontWeight.bold),
 				),
@@ -61,8 +61,8 @@ class _ToDoPageState extends State<ToDoPage>
 				enterTxtPopup(
 					context,
 					"Rename",
-					(text) {setState(() => renameToDoList(getCurrentToDoName(), text));},
-					def: getCurrentToDoName(),
+					(text) {setState(() => renameToDoList(getCurrentList(), text));},
+					def: getCurrentList(),
 				);
 				// setState(() => nextToDoNote());
 				//Navigator.pushReplacementNamed(context, '/todo');
@@ -92,7 +92,7 @@ class _ToDoPageState extends State<ToDoPage>
 			children: [
 				leftListBtn,
 				titleText,
-				if (getCurrentToDoName() != allToDoList) todoListSettingsBtn,
+				if (getCurrentList() != keyAll) todoListSettingsBtn,
 				rightListBtn,
 			],
 		);
@@ -127,7 +127,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	// create an empty list, this is what will be returned
 	List<Widget> todoItems = [];
 	// get the current todolist
-	ToDoList todoList = getToDoList(getCurrentToDoName());
+	ToDoList todoList = getToDoList(getCurrentList());
 	// sort the items
 	todoList.sortItems();
 
@@ -177,7 +177,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				// ignore: invalid_use_of_protected_member
 				state.setState(() {
 					// td.isComplete()? uncomplete(td) : complete(td);
-					saveToDoNotes(name: getCurrentToDoName(), note: toggleComplete(td), item: td);
+					saveToDoLists(name: getCurrentList(), note: toggleComplete(td), item: td);
 				});
 			}
 		); 
@@ -259,7 +259,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				onPressed: () { 
 				// ignore: invalid_use_of_protected_member
 					state.setState(() {
-						saveToDoNotes(name: getCurrentToDoName(), note: togglePriority(td), item: td);
+						saveToDoLists(name: getCurrentList(), note: togglePriority(td), item: td);
 					});
 				}, icon: Icon(td.isPriority()? Icons.star : Icons.star_border),
 				padding: EdgeInsets.zero,

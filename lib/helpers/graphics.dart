@@ -131,7 +131,7 @@ void showToDoListsPopup(BuildContext context, State state) {
 	var column = Column(
 		mainAxisSize: MainAxisSize.min,
 		children: [
-			for (String name in todoNames) Row(children: [Expanded(
+			for (String name in toDoLists.keys) Row(children: [Expanded(
 				child: TextButton(
 					style: ButtonStyle(
 						side: MaterialStateProperty.all(

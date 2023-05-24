@@ -106,22 +106,22 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			// Create an empty list to store the widgets
 			List<Widget> widgets = [];
 			// Iterate over the to-do notes
-			for (int i = 0; i < todoNames.length; i++) {
-				print(todoNames);
-				if (!listNameIsValid(todoNames[i])) {
+			for (String name in toDoLists.keys) {
+				print("$name ${toDoLists.keys}");
+				if (!lNameValid(name)) {
 					continue;
 				}
 				// Create a button for viewing the note
 				var button = ElevatedButton(
 					onPressed: () {
 						// Set the currentNote to the selected note
-						setToDoNote(todoNames[i]);
+						setToDoNote(name);
 						// Navigate to the '/about' route
 						Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
 					},
 					child: Text(
-						todoNames[i] == getToDoList(todoNames[i]).name?
-							todoNames[i] : "${todoNames[i]} - ${getToDoList(todoNames[i]).name}"
+						name == getToDoList(name).name?
+							name : "$name - ${getToDoList(name).name}"
 					),
 				);
 				// Create a button for deleting the note
@@ -131,8 +131,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 						confirmPopup(
 							context, 
 							"Confirm Delete",
-							"Pressing \"Confirm\" will **permanently** delete  \n\"${todoNames[i]}\"",
-							() => setState(() => deleteToDoNote(todoNames[i]) )
+							"Pressing \"Confirm\" will **permanently** delete  \n\"$name\"",
+							() => setState(() => deleteToDoList(name) )
 						);
 						// Navigate to the '/' route
 						// Navigator.pushReplacementNamed(context, '/');
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			Expanded(flex: 10, child: 
 				ElevatedButton(
 				onPressed: () {
-					todoNoteIndex = 0;
+					currentList = keyAll;
 					Navigator.pushNamed(context, '/todo').whenComplete(() => setState(() {}));
 				},
 				child: const Text("=ALL="),
