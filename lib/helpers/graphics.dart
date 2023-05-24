@@ -86,8 +86,8 @@ Widget readFileWidget(String path) {
 } // end readFileWidget
 
 
-void enterTxtPopup(BuildContext context, String title, String hint, Function(String) onConfirm) {
-  final TextEditingController controller = TextEditingController();
+void enterTxtPopup(BuildContext context, String title, Function(String) onConfirm, {String hint = "", String def = ""}) {
+  final TextEditingController controller = TextEditingController(text: def);
 
   showDialog(
     context: context,

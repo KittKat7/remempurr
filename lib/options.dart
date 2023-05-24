@@ -6,13 +6,14 @@ const String title = "Remempurr";
 const String filePath = "Documents/Purrductivity/Remempurr/";
 
 bool isDarkMode = false;
-MaterialColor themeColor = Colors.amber;
+// MaterialColor themeColor = Colors.amber;
+MaterialColor themeColor = Colors.blue;
 
 bool hasError = false;
 String thrownError = "";
 bool inPrivate = false;
 
-// unused theming code
+// // unused theming code
 // /* ======= Theme ======= */
 // // Save the value to shared preferences
 // Future<void> saveOptions() async

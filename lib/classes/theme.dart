@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 // custom imports
 import 'package:remempurr/options.dart';
 
-MaterialColor defColor = Colors.amber;
+// MaterialColor defColor = Colors.amber;
+MaterialColor defColor = Colors.blue;
 List<MaterialColor> themeColorList = 
  [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple, Colors.cyan];
 Brightness mode = Brightness.light;
@@ -26,6 +27,16 @@ class ThemeModel with ChangeNotifier{
   ThemeData currentTheme = ThemeData(
     primarySwatch: themeColor,
     brightness: mode,
+  );
+
+	ThemeData lightTheme = ThemeData(
+    primarySwatch: themeColor,
+    brightness: Brightness.light,
+  );
+
+	ThemeData darkTheme = ThemeData(
+    primarySwatch: themeColor,
+    brightness: Brightness.dark,
   );
 
   updateTheme()

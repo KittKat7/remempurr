@@ -38,7 +38,7 @@ dependencies:
   flutter_markdown:
   url_launcher:
   universal_html:
-  provider:
+  provider: # used for theming change notify
   shared_preferences:
   hive: # used for current note database
   hive_flutter: # used for current note database

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:remempurr/classes/theme.dart';
 // custom
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/classes/todolist.dart';
@@ -15,12 +17,12 @@ Future<void> main(List<String> args) async {
 	if (!hasError) {
 		loadToDoNotes();
 	}
-	// runApp(ChangeNotifierProvider<ThemeModel>(
-	// 		create: (context) => ThemeModel(),
-	// 		child: const MyApp(),
-	// 	)
-	// );
-	runApp(const MyApp());
+	runApp(ChangeNotifierProvider<ThemeModel>(
+			create: (context) => ThemeModel(),
+			child: const MyApp(),
+		)
+	);
+	// runApp(const MyApp());
 } // end main
 
 /* ========== MYAPP ========== */
@@ -30,19 +32,21 @@ class MyApp extends StatelessWidget {
 	// This widget is the root of your application.
 	@override
 	Widget build(BuildContext context) {
-		// Provider.of<ThemeModel>(context).updateTheme();
+		Provider.of<ThemeModel>(context).updateTheme();
 		return MaterialApp(
 			// title: 'Remempurr',
 			//theme: Provider.of<ThemeModel>(context).currentTheme,
 			// theme: Provider.of<ThemeModel>(context).currentTheme,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        /* light theme settings */
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        /* dark theme settings */
-      ),
+      // theme: ThemeData(
+      //   brightness: Brightness.light,
+      //   /* light theme settings */
+      // ),
+      // darkTheme: ThemeData(
+      //   brightness: Brightness.dark,
+      //   /* dark theme settings */
+      // ),
+			theme: Provider.of<ThemeModel>(context).lightTheme,
+			darkTheme: Provider.of<ThemeModel>(context).darkTheme,
       themeMode: ThemeMode.system,
       /* ThemeMode.system to follow system theme,
         ThemeMode.light for light theme,

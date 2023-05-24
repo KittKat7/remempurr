@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 // custom
 import 'package:remempurr/classes/widgets.dart';
 import 'package:remempurr/classes/todolist.dart';
@@ -33,7 +34,7 @@ class _ToDoPageState extends State<ToDoPage>
 			icon: const Icon(Icons.add),
 			onPressed: () {
 				getCurrentToDoName() != allToDoList?
-					enterTxtPopup(context, "New ToDo", "ToDo", (text) {setState(() => newToDo(text));}) : null;
+					enterTxtPopup(context, "New ToDo", (text) {setState(() => newToDo(text));}, hint: "Something to do") : null;
 			},
 		);
 		
@@ -60,8 +61,8 @@ class _ToDoPageState extends State<ToDoPage>
 				enterTxtPopup(
 					context,
 					"Rename",
-					getCurrentToDoName(),
-					(text) {setState(() => renameToDoList(getCurrentToDoName(), text));}
+					(text) {setState(() => renameToDoList(getCurrentToDoName(), text));},
+					def: getCurrentToDoName(),
 				);
 				// setState(() => nextToDoNote());
 				//Navigator.pushReplacementNamed(context, '/todo');
@@ -144,7 +145,32 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		}
 	}
 
+	Container container(Widget child) {
+		return Container(
+			margin: EdgeInsets.all(10),
+			child: child,
+		);
+	}
+
+	int check = 0;
 	for (ToDo td in todoList.todoItems) {
+
+		if (check < 1 && td.isPriority() && !td.isComplete()) {
+			todoItems.add(
+				container(const MarkdownBody(data: "## **Priority**"))
+			);
+			check ++;
+		} else if (check < 2 && !td.isPriority() && !td.isComplete()) {
+			todoItems.add(
+				container(const MarkdownBody(data: "## **Regular**"))
+			);
+			check ++;
+		} else if (check < 3 && td.isComplete()) {
+			todoItems.add(
+				container(const MarkdownBody(data: "## **Completed**"))
+			);
+			check ++;
+		}
 
 		// checkbox
 		var checkbox = Expanded(
@@ -169,9 +195,9 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				onTap: () => enterTxtPopup(
 					context, 
 					"Change To Do", 
-					td.getDesc(), 
 					// ignore: invalid_use_of_protected_member
-					(text) {state.setState(() => setDesc(td, text));}
+					(text) {state.setState(() => setDesc(td, text));},
+					def: td.getDesc(), 
 				),
 				child: Text(toLong? "$shortDescription..." : td.desc, style: style)
 			)
@@ -183,9 +209,9 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				onTap: () => enterTxtPopup(
 					context, 
 					"Change To Do", 
-					td.getDesc(), 
 					// ignore: invalid_use_of_protected_member
-					(text) {state.setState(() => setDesc(td, text));}
+					(text) {state.setState(() => setDesc(td, text));},
+					def: td.getDesc(),
 				),
 				child: Text(td.desc)
 			)
@@ -295,8 +321,10 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 
 		var column = Container(
 			decoration: BoxDecoration(
-				border: Border.all(color: Colors.blueAccent, width: 2),
-				borderRadius: BorderRadius.circular(10)
+				border: Border.all(color: Theme.of(context).colorScheme.onBackground, width: 2),
+				borderRadius: BorderRadius.circular(10),
+				color: Theme.of(context).canvasColor,
+				boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 5, spreadRadius: 3)]
 			),
 			margin: EdgeInsets.only(top: 2, bottom: 2),
 			child: Container(margin: EdgeInsets.only(top: 2, bottom: 2), child: Column(
@@ -316,7 +344,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		
 
 
-	}
+	} // end for
 
 
 	return todoItems;
