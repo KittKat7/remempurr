@@ -159,17 +159,17 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 			todoItems.add(
 				container(const MarkdownBody(data: "## **Priority**"))
 			);
-			check ++;
+			check = 1;
 		} else if (check < 2 && !td.isPriority() && !td.isComplete()) {
 			todoItems.add(
 				container(const MarkdownBody(data: "## **Regular**"))
 			);
-			check ++;
+			check = 2;
 		} else if (check < 3 && td.isComplete()) {
 			todoItems.add(
 				container(const MarkdownBody(data: "## **Completed**"))
 			);
-			check ++;
+			check = 3;
 		}
 
 		// checkbox
@@ -284,7 +284,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 			children: [
 				Row(
 					children: [
-						description,
+						Flexible(child: description),
 					]
 				),
 				Row(
@@ -316,7 +316,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					border: Border.all(color: Theme.of(context).colorScheme.onBackground, width: 2),
 					borderRadius: BorderRadius.circular(10),
 					color: Theme.of(context).canvasColor,
-					boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 5, spreadRadius: 3)]
+					boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 3, spreadRadius: 1)]
 				),
 				margin: const EdgeInsets.only(top: 2, bottom: 2),
 				child: Container(margin: const EdgeInsets.only(top: 2, bottom: 2), child: itemRow)

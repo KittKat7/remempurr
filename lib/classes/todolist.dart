@@ -561,6 +561,9 @@ ToDoList renameToDoList(String key, String newKey) {
 	}
 
 	toDoLists[newKey] = copy;
+	if (currentList == key) {
+		currentList = newKey;
+	}
 	return getToDoList(getCurrentList());
 	
 	// var box = Hive.box('remempurr');
@@ -835,4 +838,51 @@ void setComplete(ToDo td, DateTime? dt) {
 void setDesc(ToDo td, String desc) {
 	td.setDesc(desc);
 	saveToDoLists(name: td.listName);
+}
+
+Map<String, ToDoList> parseFromString(String dataIn) {
+	int index = 1;
+	List<String> lines = dataIn.split("\n");
+
+	Map<String, ToDoList> parsed = {};
+
+	// ignore heading line
+	while (!lines[index - 1].startsWith("## ")) {
+		index ++;
+	} // index is now at the line after the first heading
+
+	// get tags for all / description
+	String tmpStr = "";
+	while (!lines[index].startsWith("### ")) {
+		tmpStr += lines[index];
+		index ++;
+	} // index is now at first catagorie
+
+	ToDoList todoAll = ToDoList(name: keyAll, todoItems: [], desc: "");
+	// find all the tags and build the description
+	List<String> words = tmpStr.split("");
+	for (String w in words) {
+		// if the word is a tag
+		if (w.startsWith("#")) {
+			// if the tag has a value
+			if (w.contains(":")) {
+				todoAll.tags[w.split(":")[0]] = w.split(":")[1];
+			} else {
+				todoAll.tags[w] = "";
+			} // end if else
+		} else {
+			todoAll.desc = "${todoAll.desc}$w ";
+		} // end if else
+	}
+
+	parsed[keyAll] = todoAll;
+
+	List<String> lists = dataIn.substring(index).split("### ");
+
+	for (String l in lists) {
+		//TODO
+	}
+
+
+	return {};
 }

@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
 	Widget build(BuildContext context) {
 		Provider.of<ThemeModel>(context).updateTheme();
 		return MaterialApp(
-			// title: 'Remempurr',
+			title: 'Remempurr',
 			//theme: Provider.of<ThemeModel>(context).currentTheme,
 			// theme: Provider.of<ThemeModel>(context).currentTheme,
       // theme: ThemeData(
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 			List<Widget> widgets = [];
 			// Iterate over the to-do notes
 			for (String name in toDoLists.keys) {
-				print("$name ${toDoLists.keys}");
+				// print("$name ${toDoLists.keys}");
 				if (!lNameValid(name)) {
 					continue;
 				}
