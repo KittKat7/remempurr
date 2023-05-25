@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:universal_html/html.dart' as html;
-import 'dart:js' as js;
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_selector/file_selector.dart';
@@ -10,8 +9,6 @@ import 'package:remempurr/classes/todolist.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-import 'dart:convert';
-import 'dart:typed_data';
 
 String formatDate(DateTime? date) {
 	if (date == null) return "null";

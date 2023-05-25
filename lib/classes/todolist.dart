@@ -950,6 +950,7 @@ Map<String, ToDoList> parseFromString(String dataIn) {
 						toDo.desc = "${toDo.desc}$w ";
 					} // end if else
 				}
+				toDo.desc = toDo.desc.trim();
 				toDoList.todoItems.add(toDo);
 				print("comp: ${toDo.getCompDate()} - ${toDo.tags[compDate]}");
 			} // end desc and tags

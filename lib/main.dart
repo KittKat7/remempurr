@@ -223,7 +223,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
 					importToDoLists().then((value) => setState(() {saveToDoLists();}));
 				},
-				child: const Text("Import (WIP)"),
+				child: const Text("Import"),
 			)),
 			const Expanded(flex: 1, child: SizedBox()),
 			Expanded(flex: 7, child: ElevatedButton(
@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
 					exportToDoLists();
 				},
-				child: const Text("Export (WIP)"),
+				child: const Text("Export"),
 			)),
 		]);
 		
