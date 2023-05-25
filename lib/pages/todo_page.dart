@@ -127,15 +127,15 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	// create an empty list, this is what will be returned
 	List<Widget> todoItems = [];
 	// get the current todolist
-	ToDoList todoList = getToDoList(getCurrentList());
+	ToDoList toDoList = getToDoList(getCurrentList());
 	// sort the items
-	todoList.sortItems();
+	toDoList.sortItems();
 
 	List<ToDo> priority = [];
 	List<ToDo> normal = [];
 	List<ToDo> completed = [];
 
-	for (ToDo td in todoList.todoItems) {
+	for (ToDo td in toDoList.todoItems) {
 		if (td.isComplete()) {
 			completed.add(td);
 		} else if (td.isPriority()) {
@@ -152,8 +152,17 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		);
 	}
 
+	if (toDoList.desc.isNotEmpty) {
+		todoItems.add(
+				container(const MarkdownBody(data: "## **Note**"))
+			);
+		todoItems.add(
+			container(MarkdownBody(data: "${toDoList.desc}${toDoList.tags.toString()}"))
+		);
+	}
+
 	int check = 0;
-	for (ToDo td in todoList.todoItems) {
+	for (ToDo td in toDoList.todoItems) {
 
 		if (check < 1 && td.isPriority() && !td.isComplete()) {
 			todoItems.add(
@@ -162,7 +171,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 			check = 1;
 		} else if (check < 2 && !td.isPriority() && !td.isComplete()) {
 			todoItems.add(
-				container(const MarkdownBody(data: "## **Regular**"))
+				container(const MarkdownBody(data: "## **Low Priority**"))
 			);
 			check = 2;
 		} else if (check < 3 && td.isComplete()) {

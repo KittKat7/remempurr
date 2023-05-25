@@ -221,7 +221,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 				onPressed: () {
 					// newToDoNote();
 					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
-					print("\n${parseToString()}");
+					importToDoLists().then((value) => setState(() {saveToDoLists();}));
 				},
 				child: const Text("Import (WIP)"),
 			)),

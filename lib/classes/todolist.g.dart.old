@@ -16,26 +16,23 @@ class ToDoListAdapter extends TypeAdapter<ToDoList> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-
-		// edited:
-		// tags used to be <String, String?>, this handles the String? and converts it to String
-		final tags = (fields[3] as Map).cast<String, dynamic>();
-    final convertedTags = <String, String>{};
-
-    tags.forEach((key, value) {
-      if (value is String) {
-        convertedTags[key] = value;
-      } else if (value is String?) {
-        convertedTags[key] = value ?? ''; // Assign empty string if value is null
-      }
-    });
-		// end edited
-
+		// remove null items
+		var tagsIn = (fields[3] as Map?)?.cast<String, String?>();
+		Map<String, String>? tags = {};
+		if (tagsIn != null) {
+			for (String key in tagsIn.keys) {
+				if (tagsIn[key] == null) {
+					tags[key] = "";
+				} else {
+					tags[key] = tagsIn[key]!;
+				}
+			}
+		} // end null remove
     return ToDoList(
       name: fields[0] as String,
-      desc: fields[1] == null? "" : fields[1] as String, // edited: from `fields[1] as String`, to handle nulls
+      desc: fields[1] == null? "" : fields[1] as String,
       todoItems: (fields[2] as List).cast<ToDo>(),
-      tags: convertedTags, // edited: changed from `tags: (fields[3] as Map).cast<String, String>()`
+      tags: tags,
     );
   }
 
@@ -74,25 +71,23 @@ class ToDoAdapter extends TypeAdapter<ToDo> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-
-		// edited:
-		// tags used to be <String, String?>, this handles the String? and converts it to String
-		final tags = (fields[2] as Map).cast<String, dynamic>();
-    final convertedTags = <String, String>{};
-
-    tags.forEach((key, value) {
-      if (value is String) {
-        convertedTags[key] = value;
-      } else if (value is String?) {
-        convertedTags[key] = value ?? ''; // Assign empty string if value is null
-      }
-    });
-		// end edited
-
+		// remove null items
+		var tagsIn = (fields[3] as Map?)?.cast<String, String?>();
+		Map<String, String>? tags = {};
+				print(tagsIn);
+		if (tagsIn != null) {
+			for (String key in tagsIn.keys) {
+				if (tagsIn[key] == null) {
+					tags[key] = "";
+				} else {
+					tags[key] = tagsIn[key]!;
+				}
+			}
+		} // end null remove
     return ToDo(
       desc: fields[0] as String,
       listName: fields[1] as String,
-      tags: convertedTags, // changed from `tags: (fields[2] as Map).cast<String, String>()`
+      tags: tags,
     );
   }
 

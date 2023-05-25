@@ -35,7 +35,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  flutter_markdown:
+  flutter_markdown: #
   url_launcher:
   universal_html:
   provider: # used for theming change notify
@@ -44,8 +44,8 @@ dependencies:
   hive_flutter: # used for current note database
   path_provider: # used for saving files, mobile, desktop?
   file_selector: # selecting file locations for save / load files, desktop
-  # file_picker: # selecting file locations for save / load files, mobile
-  permission_handler:
+  file_picker: ^4.2.7 # selecting file locations for save / load files, mobile
+  permission_handler: 
 
 dev_dependencies:
   flutter_test:

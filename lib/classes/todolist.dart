@@ -15,21 +15,22 @@ class ToDoList extends HiveObject {
 	String name;
 
 	@HiveField(1)
-	String? desc;
+	String desc;
 
 	@HiveField(2)
 	List<ToDo> todoItems;
 
 	@HiveField(3)
-	Map<String, String?> tags = {};
+	Map<String, String> tags;
 
-	ToDoList({required this.name, this.desc, required this.todoItems,
-		Map<String, String?>? tags}) : tags = tags ?? {};
+	ToDoList({required this.name, required this.desc, required this.todoItems, required this.tags});
 
 	ToDoList clone() {
 		return ToDoList(
 			name: name,
+			desc: desc,
 			todoItems: List.from(todoItems),
+			tags: tags,
 		);
 	}
 
@@ -40,7 +41,7 @@ class ToDoList extends HiveObject {
 		for (String key in tags.keys) {
 			str += " ";
 			str += "#$key";
-			if (tags[key] != null ) str += ":${tags[key].toString()}";
+			if (tags[key] != null) str += ":${tags[key].toString()}";
 		}
 		str += "\n\n";
 
@@ -74,10 +75,10 @@ class ToDoList extends HiveObject {
 		} str += "\n";
 
 		return str;
-	}
+	} // end toString
 
 	ToDoList prioritize(ToDo item) {
-		item.tags["ASAP"] = null;
+		item.tags["ASAP"] = "";
 		return sortItems();
 	}
 
@@ -207,13 +208,9 @@ class ToDo extends HiveObject {
 	/// {dueDate: DateTime, completed: DateTime, repeat: String}
 	/// ```
 	@HiveField(2)
-	Map<String, String?> tags = {};	
+	Map<String, String> tags;	
 
-	ToDo({required this.desc, required this.listName, Map<String, String?>? tags}) {
-		if (tags != null) {
-			this.tags = tags;
-		}
-	}
+	ToDo({required this.desc, required this.listName, required this.tags});
 
 	ToDo clone() {
 		return ToDo(
@@ -260,7 +257,11 @@ class ToDo extends HiveObject {
 	}
 
 	ToDo setCompleted(DateTime? date) {
-		tags[compDate] = date?.toIso8601String();
+		if (date == null) {
+			tags[compDate] = "";
+			return this;
+		}
+		tags[compDate] = date.toIso8601String();
 		return this;
 	}
 
@@ -334,13 +335,15 @@ class ToDo extends HiveObject {
 
 /* =========== HELPERS =========== */
 
-ToDo defToDoP = ToDo(desc: "Pet a cat NOW!", listName: "Default", tags: {"asap":null});
+ToDo defToDoP = ToDo(desc: "Pet a cat NOW!", listName: "Default", tags: {"asap":""});
 ToDo defToDoN = ToDo(desc: "Pet a cat.", listName: "Default", tags: {});
 ToDo defToDoC = ToDo(desc: "Make a note, Good Job :)", listName: "Default", tags: {});
 
 ToDoList defToDoList = ToDoList(
 	name: "Default",
-	todoItems: [defToDoP.clone(), defToDoN.clone(), defToDoC.clone().setCompleted(DateTime.now())]
+	desc: "Desault list",
+	todoItems: [defToDoP.clone(), defToDoN.clone(), defToDoC.clone().setCompleted(DateTime.now())],
+	tags: {}
 );
 
 Map<String, ToDoList> toDoLists = {};
@@ -414,9 +417,9 @@ void loadToDoNotes() {
 
 	// TODO
 	if (box.keys.toList().isNotEmpty && !box.keys.toList().contains("tags")) {
-		print(box.toMap());
+		// print(box.toMap());
 		toDoLists = box.toMap().cast<String, ToDoList>();
-		toDoLists[keyAll] = ToDoList(name: keyAll, todoItems: []);
+		toDoLists[keyAll] = ToDoList(name: keyAll, desc: "", todoItems: [], tags: {});
 		box.deleteAll(box.keys);
 		saveToDoLists();
 		box.put("tags", <String, String>{"version": saveFormetVersion.toString()});
@@ -436,7 +439,7 @@ void loadToDoNotes() {
 		toDoLists["Default"] = defToDoList;
 	}
 	if (!toDoLists.containsKey(keyAll)) {
-		toDoLists[keyAll] = ToDoList(name: keyAll, todoItems: []);
+		toDoLists[keyAll] = ToDoList(name: keyAll, desc: "", todoItems: [], tags: {});
 	}
 
 	saveToDoLists();
@@ -531,7 +534,7 @@ void newToDoList({String? name}) {
 	name ??= "New To-Do List";
 	name = lNameDupCheck(name);
 
-	toDoLists[name] = ToDoList(name: name, todoItems: []);
+	toDoLists[name] = ToDoList(name: name, desc: "", todoItems: [], tags: {});
 	
 	// var box = Hive.box('remempurr');
 	// name ??= "New To-Do List";
@@ -804,27 +807,6 @@ void closeBox() {
 	Hive.close();
 }
 
-String parseToString() {
-	String parsedString = "";
-	
-	void addLine(String txt) {
-		parsedString += "$txt\n";
-	}
-	
-	addLine("## Remempurr");
-	addLine("#todo\n");
-	
-	for (String name in toDoLists.keys.toList()) {
-		if (name != keyAll) {
-			print(name);
-			print(getToDoList(name).name);
-			print("\n");
-		  addLine(getToDoList(name).toString());
-		}
-	}
-	return parsedString;
-}
-
 void setDueDate(ToDo td, DateTime? dt) {
 	td.setDueDate(dt);
 	saveToDoLists(name: td.listName);
@@ -840,16 +822,36 @@ void setDesc(ToDo td, String desc) {
 	saveToDoLists(name: td.listName);
 }
 
+String parseToString() {
+	String parsedString = "";
+	
+	void addLine(String txt) {
+		parsedString += "$txt\n";
+	}
+	
+	addLine("## Remempurr");
+	addLine("#todo\n");
+	
+	for (String name in toDoLists.keys.toList()) {
+		if (name != keyAll) {
+			// print(name);
+			// print(getToDoList(name).name);
+			// print("\n");
+		  addLine(getToDoList(name).toString());
+		}
+	}
+	return parsedString;
+}
+
 Map<String, ToDoList> parseFromString(String dataIn) {
-	int index = 1;
+	int index = 0;
 	List<String> lines = dataIn.split("\n");
 
 	Map<String, ToDoList> parsed = {};
-
 	// ignore heading line
-	while (!lines[index - 1].startsWith("## ")) {
+	while (!lines[index].startsWith("## ")) {
 		index ++;
-	} // index is now at the line after the first heading
+	} index ++;// index is now at the line after the first heading
 
 	// get tags for all / description
 	String tmpStr = "";
@@ -858,31 +860,104 @@ Map<String, ToDoList> parseFromString(String dataIn) {
 		index ++;
 	} // index is now at first catagorie
 
-	ToDoList todoAll = ToDoList(name: keyAll, todoItems: [], desc: "");
+	ToDoList toDoAll = ToDoList(name: keyAll, desc: "", todoItems: [], tags: {});
 	// find all the tags and build the description
-	List<String> words = tmpStr.split("");
+	List<String> words = tmpStr.split(" ");
 	for (String w in words) {
+		// remove extra white space, " " or "\n", etc...
+		w = w.trim();
 		// if the word is a tag
-		if (w.startsWith("#")) {
+		if (w.startsWith("#") && w[1] != '#') {
 			// if the tag has a value
 			if (w.contains(":")) {
-				todoAll.tags[w.split(":")[0]] = w.split(":")[1];
+				toDoAll.tags[w.split(":")[0].substring(1)] = w.split(":")[1];
 			} else {
-				todoAll.tags[w] = "";
+				toDoAll.tags[w.substring(1)] = "";
 			} // end if else
 		} else {
-			todoAll.desc = "${todoAll.desc}$w ";
+			toDoAll.desc = "${toDoAll.desc}$w ";
 		} // end if else
 	}
 
-	parsed[keyAll] = todoAll;
-
-	List<String> lists = dataIn.substring(index).split("### ");
-
-	for (String l in lists) {
-		//TODO
+	parsed[keyAll] = toDoAll;
+	
+	String tmp = "\n";
+	for (int i = index; i < lines.length; i++) {
+		tmp += "${lines[i]}\n";
 	}
 
+	List<String> lists = tmp.split("\n### ");
+	for (String list in lists) {
+		if (list.isEmpty) {
+			continue;
+		}
+		lines = list.split("\n");
+		bool isToDoItems = false;
+		ToDoList toDoList = ToDoList(name: lines[0].trim(), desc: "", todoItems: [], tags: {});
+		
+		for (String line in lines) {
+			if (lines.indexOf(line) == 0) continue;
+			if (line.trim().isNotEmpty && !line.startsWith("- [") && !isToDoItems && !line.startsWith("##")) {
+				words = line.split(" ");
+				for (String w in words) {
+					// if the word is a tag
+					if (w.startsWith("#") && w[1] != '#') {
+						w = w.substring(1);
+						// if the tag has a value
+						if (w.contains(":")) {
+							toDoList.tags[w.split(":")[0]] = w.split(":")[1];
+						} else {
+							toDoList.tags[w] = "";
+						} // end if else
+					} else {
+						toDoList.desc = "${toDoList.desc}$w ";
+					} // end if else
+				}
+			} // end desc and tags
 
-	return {};
+			// print(toDoList.name);
+
+			if (line.startsWith("- [")) {
+				isToDoItems = true;
+				ToDo toDo = ToDo(desc: "", listName: toDoList.name, tags: {});
+				
+				line = line.trim();
+				if (line.startsWith("- [x]")) {
+					toDo.setCompleted(DateTime.now());
+				}
+				
+				if (line.startsWith("- [x]")) {
+				  line = line.substring(5);
+				} else if (line.startsWith("- [ ]")) {
+					line = line.substring(5);
+				} else if (line.startsWith("- []")) {
+					line = line.substring(4);
+				}
+				line = line.trim();
+				words = line.split(" ");
+				for (String w in words) {
+					// if the word is a tag
+					if (w.startsWith("#") && w[1] != '#') {
+						w = w.substring(1);
+						// if the tag has a value
+						if (w.contains(":")) {
+							toDo.tags[w.split(":")[0]] = w.split(":")[1];
+							print("${w.split(":")[0]} date -- ${toDo.tags[compDate]}");
+						} else {
+							toDo.tags[w] = "";
+						} // end if else
+					} else {
+						toDo.desc = "${toDo.desc}$w ";
+					} // end if else
+				}
+				toDoList.todoItems.add(toDo);
+				print("comp: ${toDo.getCompDate()} - ${toDo.tags[compDate]}");
+			} // end desc and tags
+			
+		} // end for line
+		parsed[toDoList.name] = toDoList;
+	} // end for list
+	
+
+	return parsed;
 }
