@@ -222,3 +222,11 @@ void confirmPopup(BuildContext context, String title, String question, Function(
     },
   );
 }
+
+Row flexible(List<Widget> children) {
+	return Row(
+		children: [
+			for (Widget w in children) Flexible(flex: 1, child: w)
+		]
+	);
+}

@@ -298,12 +298,12 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				),
 				Row(
 					children: [
-						// Expanded(flex: 4, child: dueDate),
-						// Expanded(flex: 4, child: compDate),
+						Expanded(flex: 3, child: dueDate),
+						const Expanded(flex: 1, child: Text(" - ")),
+						Expanded(flex: 3, child: compDate),
 						// Expanded(flex: 7, child: SizedBox())
-						dueDate,
-						const Text(" - "),
-						compDate,
+						// flexible([dueDate]),
+						// flexible([compDate]),
 					],
 				)
 			]
