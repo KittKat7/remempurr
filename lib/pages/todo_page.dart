@@ -108,7 +108,7 @@ class _ToDoPageState extends State<ToDoPage>
 				automaticallyImplyLeading: false,
 				// add menu btn
 				leading: menuBtn,
-				actions: [ newToDoBtn, ],
+				actions: [ if (getCurrentList() != keyAll) newToDoBtn, ],
 			),
 			body: PaddedScroll(
 				context: context,
@@ -193,7 +193,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 
 		// description
 		bool toLong = td.desc.length >= 32;
-		String shortDescription = toLong? td.desc.substring(0, 29) : td.desc;
+		String shortDescription = toLong? td.desc.substring(0, 32) : td.desc;
 		var description = GestureDetector(
 			onTap: () => enterTxtPopup(
 				context, 
@@ -202,7 +202,8 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				(text) {state.setState(() => setDesc(td, text));},
 				def: td.getDesc(),
 			),
-			child: MarkdownBody(data: "${td.isPriority()? "**" : ""}${td.desc}${td.isPriority()? "**" : ""}")
+			child: MarkdownBody(data: "${td.isComplete()? "~~" : ""}${td.isPriority()? "**" : ""}"
+				"${td.desc}${td.isPriority()? "**" : ""}${td.isComplete()? "~~" : ""}")
 		);
 
 		// dueDate
@@ -232,7 +233,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					);
 				},
 				child: Text(
-					td.isDue()? "Due: $formattedDueDate" : "Due",
+					td.isDue()? "Due: $formattedDueDate" : "Not Due",
 					style: dueDateTxtStyle,
 				),
 		);
@@ -258,7 +259,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				);
 			},
 			child: Text(
-				td.isComplete()? "Done: $formattedCompDate" : "Done",
+				td.isComplete()? "Done: $formattedCompDate" : "Incomplete",
 				style: const TextStyle(fontStyle: FontStyle.italic),
 			),
 		);

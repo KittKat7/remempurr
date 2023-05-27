@@ -923,7 +923,7 @@ Map<String, ToDoList> parseFromString(String dataIn) {
 				
 				line = line.trim();
 				if (line.startsWith("- [x]")) {
-					toDo.setCompleted(DateTime.now());
+					toDo.setCompleted(null);
 				}
 				
 				if (line.startsWith("- [x]")) {
