@@ -1,40 +1,33 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 // custom
 import 'package:remempurr/classes/widgets.dart';
-import 'package:remempurr/classes/todolist.dart';
+import 'package:remempurr/classes/rmpr_note.dart';
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/helpers/helpers.dart';
 
-class ToDoPage extends StatefulWidget
+class NotePage extends StatefulWidget
 {
 	final String title;
-	const ToDoPage({super.key, required this.title});
+	const NotePage({super.key, required this.title});
 	
 	@override
-	State<ToDoPage> createState() => _ToDoPageState();
+	State<NotePage> createState() => _NotePageState();
 } // end ToDoPagePage
 
-class _ToDoPageState extends State<ToDoPage>
+class _NotePageState extends State<NotePage>
 {
 	@override
 	Widget build(BuildContext context) {
 		
 		// menu button
-		var menuBtn = IconButton(
-			icon: const Icon(Icons.menu),
+		var backBtn = IconButton(
+			icon: const Icon(Icons.arrow_back),
 			onPressed: () {
 				Navigator.pop(context);
 				// Navigator.pushNamed(context, '/menu');
-			},
-		);
-
-		// new to-do button
-		var newToDoBtn = IconButton(
-			icon: const Icon(Icons.add),
-			onPressed: () {
-				getCurrentList() != keyAll?
-					enterTxtPopup(context, "New ToDo", (text) {setState(() => newToDo(text));}, hint: "Something to do") : null;
 			},
 		);
 		
@@ -42,46 +35,46 @@ class _ToDoPageState extends State<ToDoPage>
 		var titleText = GestureDetector(
 			onTap: () {
 				// showListPopup();
-				showToDoListsPopup(context, this);
+				showToDoListsPopup(context, this, (name) {currentName = name;});
 				// setState(() => showToDoListsPopup(context, this));
 			},
 			child: Padding(
 				padding: const EdgeInsets.all(15.0),
 				child: Text(
-					getCurrentList(),
+					currentName,
 					textAlign: TextAlign.center,
 					// style: const TextStyle(fontWeight: FontWeight.bold),
 				),
 			),
 		);
 
-		var todoListSettingsBtn = IconButton(
+		var rmprNoteSettingsBtn = IconButton(
 			icon: const Icon(Icons.settings),
 			onPressed: () {
 				enterTxtPopup(
 					context,
 					"Rename",
-					(text) {setState(() => renameToDoList(getCurrentList(), text));},
-					def: getCurrentList(),
+					(text) {setState(() => renameNote(currentName, text));},
+					def: currentName,
 				);
 				// setState(() => nextToDoNote());
-				//Navigator.pushReplacementNamed(context, '/todo');
+				//Navigator.pushReplacementNamed(context, notePageRoute);
 			},
 		);
 
 		var leftListBtn = IconButton(
 			icon: const Icon(Icons.keyboard_arrow_left),
 			onPressed: () {
-				setState(() => previousToDoNote());
-				//Navigator.pushReplacementNamed(context, '/todo');
+				setState(() => currentName = prevNoteName());
+				//Navigator.pushReplacementNamed(context, notePageRoute);
 			},
 		);
 
 		var rightListBtn = IconButton(
 			icon: const Icon(Icons.keyboard_arrow_right),
 			onPressed: () {
-				setState(() => nextToDoNote());
-				//Navigator.pushReplacementNamed(context, '/todo');
+				setState(() => currentName = nextNoteName());
+				//Navigator.pushReplacementNamed(context, notePageRoute);
 			},
 		);
 		
@@ -92,7 +85,6 @@ class _ToDoPageState extends State<ToDoPage>
 			children: [
 				leftListBtn,
 				titleText,
-				if (getCurrentList() != keyAll) todoListSettingsBtn,
 				rightListBtn,
 			],
 		);
@@ -107,17 +99,23 @@ class _ToDoPageState extends State<ToDoPage>
 				// remove the back button
 				automaticallyImplyLeading: false,
 				// add menu btn
-				leading: menuBtn,
-				actions: [ if (getCurrentList() != keyAll) newToDoBtn, ],
+				leading: backBtn,
+				actions: [ if (currentName != keyAll) rmprNoteSettingsBtn,/*if (currentName != keyAll) newToDoBtn,*/ ],
 			),
 			body: PaddedScroll(
 				context: context,
 				children: children,
 			),
-			floatingActionButton: FloatingActionButton(
-				onPressed: () => Navigator.pushNamed(context, "/help"),
-				child: const Icon(Icons.help),
-			),
+			floatingActionButton: currentName != keyAll? FloatingActionButton(
+				onPressed: () {
+					enterTxtPopup(context, "New ToDo", (text) {setState(() => newToDo(getCurrentNote(), text));}, hint: "Something to do");
+				},
+				child: const Icon(Icons.add),
+			) : null,
+			// floatingActionButton: FloatingActionButton(
+			// 	onPressed: () => Navigator.pushNamed(context, "/help"),
+			// 	child: const Icon(Icons.help),
+			// ),
 		);
 	} // end build
 } // end _ToDoPageState
@@ -127,23 +125,14 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	// create an empty list, this is what will be returned
 	List<Widget> todoItems = [];
 	// get the current todolist
-	ToDoList toDoList = getToDoList(getCurrentList());
+	//ToDoList toDoList = getToDoList(currentName);
+	
+	RmprNote rmprNote = getCurrentNote();
+
+	List<ToDo> toDoList = rmprNote.toDoItems;
+	
 	// sort the items
-	toDoList.sortItems();
-
-	List<ToDo> priority = [];
-	List<ToDo> normal = [];
-	List<ToDo> completed = [];
-
-	for (ToDo td in toDoList.todoItems) {
-		if (td.isComplete()) {
-			completed.add(td);
-		} else if (td.isPriority()) {
-			priority.add(td);
-		} else {
-			normal.add(td);
-		}
-	}
+	//toDoList.sortItems();
 
 	Container container(Widget child) {
 		return Container(
@@ -151,42 +140,47 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 			child: child,
 		);
 	}
-
-	if (toDoList.desc.isNotEmpty) {
+	final TextEditingController controller = TextEditingController(text: rmprNote.note);
+	if (rmprNote.name != keyAll) {
 		todoItems.add(
-				container(const MarkdownBody(data: "## **Note**"))
-			);
-		todoItems.add(
-			container(MarkdownBody(data: "${toDoList.desc}${toDoList.tags.toString()}"))
+			container(const MarkdownBody(data: "## **Note**"))
 		);
+		todoItems.add(
+			// container(MarkdownBody(data: "${rmprNote.note}${/*rmprNote.tags.toString()*/""}"))
+			GlowButton(
+				onTap: () {  },
+				child: container(
+					TextField(
+						controller: controller,
+						onChanged: (String text) {
+							rmprNote.note = text;
+							saveToDoNotes();
+						},
+						keyboardType: TextInputType.multiline,
+						maxLines: null,
+					)
+				)
+			)
+		);
+		// todoItems.add(
+		// 	GlowButton(child: Text("SaveText"), onTap: () {
+		// 		rmprNote.note = controller.text;
+		// 		saveToDoNotes();
+		// 	})
+		// );
 	}
 
-	int check = 0;
-	for (ToDo td in toDoList.todoItems) {
-
-		if (check < 1 && td.isPriority() && !td.isComplete()) {
-			todoItems.add(
-				container(const MarkdownBody(data: "## **Priority**"))
-			);
-			check = 1;
-		} else if (check < 2 && !td.isPriority() && !td.isComplete()) {
-			todoItems.add(
-				container(const MarkdownBody(data: "## **Low Priority**"))
-			);
-			check = 2;
-		} else if (check < 3 && td.isComplete()) {
-			todoItems.add(
-				container(const MarkdownBody(data: "## **Completed**"))
-			);
-			check = 3;
-		}
-
+	todoItems.add(
+		container(const MarkdownBody(data: "## **Checklist**"))
+	);
+	for (ToDo td in toDoList) {
+		
 		// checkbox
 		var checkbox = Checkbox(value: td.isComplete(), onChanged: (bool? value) { 
 				// ignore: invalid_use_of_protected_member
 				state.setState(() {
-					// td.isComplete()? uncomplete(td) : complete(td);
-					saveToDoLists(name: getCurrentList(), note: toggleComplete(td), item: td);
+					td.isComplete()? td.clearCompDate() : td.setCompDate(DateTime.now());
+					saveToDoNotes();
 				});
 			}
 		); 
@@ -199,37 +193,43 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				context, 
 				"Change To Do", 
 				// ignore: invalid_use_of_protected_member
-				(text) {state.setState(() => setDesc(td, text));},
-				def: td.getDesc(),
+				(text) {state.setState(() {td.desc = text.trim(); saveToDoNotes();});},
+				def: td.desc,
 			),
-			child: MarkdownBody(data: "${td.isComplete()? "~~" : ""}${td.isPriority()? "**" : ""}"
-				"${td.desc}${td.isPriority()? "**" : ""}${td.isComplete()? "~~" : ""}")
+			child: MarkdownBody(data: "${td.isComplete()? "~~" : ""}${td.isStarred()? "**" : ""}"
+				"${td.desc.trim()}${td.isStarred()? "**" : ""}${td.isComplete()? "~~" : ""}")
 		);
 
 		// dueDate
-		bool isLate = td.isDue() && !td.isComplete()?
-			DateTime.now().compareTo(td.getDueDate()!) > -1? true : false : false;
+		bool isLate = false;
+		if (td.isDue() && !td.isComplete()) {
+			DateTime? dueDate = DateTime.tryParse(td.getDueString());
+			if (dueDate != null && DateTime.now().compareTo(dueDate) > -1) {
+				isLate = true;
+			}
+		}
+
 		TextStyle dueDateTxtStyle = TextStyle(
 			color: isLate? Colors.red : null,
 			fontWeight: isLate? FontWeight.bold : null,
 			fontStyle: FontStyle.italic,
 			);
-		String formattedDueDate = td.isDue()? formatDate(td.getDueDate()!) : "";
+		String formattedDueDate = formatDateString(td.getDueString());
 		var dueDate = GestureDetector(
 				onTap: () { 
 					dateSelect(
 						context, 
 						// ignore: invalid_use_of_protected_member
-						(p0) => state.setState(() => setDueDate(td, p0))
+						(date) => state.setState(() => td.setDueDate(date))
 					);
 				},
 				onLongPress: () {
-				  confirmPopup(
+					confirmPopup(
 						context, 
 						"Remove Due Date", 
 						"Pressing \"Confirm\" will remove the due date for  \n\"$shortDescription\"", 
 						// ignore: invalid_use_of_protected_member
-						() => state.setState(() => setDueDate(td, null))
+						() => state.setState(() => td.clearDueDate())
 					);
 				},
 				child: Text(
@@ -240,16 +240,19 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 
 		// compDate
 		String formattedCompDate = td.isComplete()? formatDate(td.getCompDate()) : "";
-		if (formattedCompDate == "null") formattedCompDate = "N/A";
+		if (formattedCompDate == "") formattedCompDate = "N/A";
 		var compDate = GestureDetector(
 			onTap: () { 
+				/* //TODO
 				dateSelect(
 					context, 
 					// ignore: invalid_use_of_protected_member
 					(p0) => state.setState(() => setComplete(td, p0))
 				);
+				*/
 			},
 			onLongPress: () {
+				/* //TODO
 				confirmPopup(
 					context, 
 					"Remove Completed Date", 
@@ -257,6 +260,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					// ignore: invalid_use_of_protected_member
 					() => state.setState(() => setComplete(td, null))
 				);
+				*/
 			},
 			child: Text(
 				td.isComplete()? "Done: $formattedCompDate" : "Incomplete",
@@ -265,30 +269,31 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		);
 
 		// star button
-		var star = IconButton(
+		var star = Material(child: IconButton(
 				onPressed: () { 
-				// ignore: invalid_use_of_protected_member
+					// ignore: invalid_use_of_protected_member
 					state.setState(() {
-						saveToDoLists(name: getCurrentList(), note: togglePriority(td), item: td);
+						td.isStarred()? td.star(false) : td.star(true);
+						saveToDoNotes();
 					});
-				}, icon: Icon(td.isPriority()? Icons.star : Icons.star_border),
+				}, icon: Icon(td.isStarred()? Icons.star : Icons.star_border),
 				padding: EdgeInsets.zero,
-		); // end star button
+		)); // end star button
 		
 		// delete button
-		var delBtn = IconButton(
+		var delBtn = Material(child: IconButton(
 				onPressed: () {
-				// ignore: invalid_use_of_protected_member
-				confirmPopup(
-					context, 
-					"Confirm Delete",
-					"Pressing \"Confirm\" will **permanently** delete  \n\"$shortDescription\"",
 					// ignore: invalid_use_of_protected_member
-					() {state.setState(() => deleteToDo(td));}
-				);
-			}, icon: const Icon(Icons.settings),
+					confirmPopup(
+						context, 
+						"Confirm Delete",
+						"Pressing \"Confirm\" will **permanently** delete  \n\"$shortDescription\"",
+						// ignore: invalid_use_of_protected_member
+						() {state.setState(() => delToDo(td));}
+					);
+				}, icon: const Icon(Icons.settings),
 			padding: EdgeInsets.zero,
-		); // end delete button
+		)); // end delete button
 
 		var descCol = Column(
 			children: [
@@ -321,20 +326,17 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 
 		var item = GestureDetector(
 			onLongPress: () => confirmPopup(context, "Hi", "This is a test...", () => null),
-			child: Container(
-				decoration: BoxDecoration(
-					border: Border.all(color: Theme.of(context).colorScheme.onBackground, width: 2),
-					borderRadius: BorderRadius.circular(10),
-					color: Theme.of(context).canvasColor,
-					boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 3, spreadRadius: 1)]
-				),
-				margin: const EdgeInsets.only(top: 2, bottom: 2),
+			child: GlowButton(
+				onTap: () {},
 				child: Container(margin: const EdgeInsets.only(top: 2, bottom: 2), child: itemRow)
 			)
 		);
 		
 		todoItems.add(
 			item
+		);
+		todoItems.add(
+			spacer
 		);
 
 

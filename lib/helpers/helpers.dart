@@ -5,12 +5,24 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:remempurr/classes/todolist.dart';
+import 'package:remempurr/classes/rmpr_note.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 
 String formatDate(DateTime? date) {
+	if (date == null) return "null";
+	String formattedDate = 
+		"${date.year.toString().padLeft(4, '0')}-"
+		"${date.month.toString().padLeft(2, '0')}-"
+		"${date.day.toString().padLeft(2, '0')} "
+		"${date.hour.toString().padLeft(2, '0')}:"
+		"${date.minute.toString().padLeft(2, '0')}";
+		return formattedDate;
+}
+
+String formatDateString(String str) {
+	DateTime? date = DateTime.tryParse(str);
 	if (date == null) return "null";
 	String formattedDate = 
 		"${date.year.toString().padLeft(4, '0')}-"
@@ -123,7 +135,7 @@ Future importToDoLists() async {
 		return;
 	}
 	print(inData);
-	toDoLists = parseFromString(inData);
+	// toDoLists = parseFromString(inData); // TODO
 	print("imported");
 }
 

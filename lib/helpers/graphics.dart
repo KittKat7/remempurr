@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:remempurr/classes/todolist.dart';
+import 'package:remempurr/classes/rmpr_note.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 
@@ -39,11 +39,12 @@ Size getScreenSize(BuildContext context) {
 	// ignore: unused_local_variable
 	double drawH = scaleH / aspectH;
 
-	double scale = scaleH * 10;
+	double scale = scaleH * aspectW;
 	paddingW = (size.width - scale) / (size.width) / 2;
 	if (paddingW < 0.1) {
-		paddingW = 0.1;
+		paddingW = 0.01;
 	}
+	// paddingW = 0.01;
 	return size;
 }
 
@@ -87,51 +88,53 @@ Widget readFileWidget(String path) {
 
 
 void enterTxtPopup(BuildContext context, String title, Function(String) onConfirm, {String hint = "", String def = ""}) {
-  final TextEditingController controller = TextEditingController(text: def);
+	final TextEditingController controller = TextEditingController(text: def);
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: TextField(
+	showDialog(
+		context: context,
+		builder: (BuildContext context) {
+			return AlertDialog(
+				title: Text(title),
+				content: TextField(
 					decoration: InputDecoration(
 						hintText: hint
 					),
-          controller: controller,
-          onChanged: (value) {
-            // Handle text change
-          },
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              // Handle cancel
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Confirm'),
-            onPressed: () {
-              // Handle confirm
-              String text = controller.text;
-              Navigator.of(context).pop();
+					controller: controller,
+					onChanged: (value) {
+						// Handle text change
+					},
+					keyboardType: TextInputType.multiline,
+					maxLines: null,
+				),
+				actions: <Widget>[
+					TextButton(
+						child: const Text('Cancel'),
+						onPressed: () {
+							// Handle cancel
+							Navigator.of(context).pop();
+						},
+					),
+					TextButton(
+						child: const Text('Confirm'),
+						onPressed: () {
+							// Handle confirm
+							String text = controller.text;
+							Navigator.of(context).pop();
 							onConfirm(text);
-            },
-          ),
-        ],
-      );
-    },
-  );
+						},
+					),
+				],
+			);
+		},
+	);
 }
 
-void showToDoListsPopup(BuildContext context, State state) {
+void showToDoListsPopup(BuildContext context, State state, Function (String) onConfirm) {
 
 	var column = Column(
 		mainAxisSize: MainAxisSize.min,
 		children: [
-			for (String name in toDoLists.keys) Row(children: [Expanded(
+			Row(children: [Expanded(
 				child: TextButton(
 					style: ButtonStyle(
 						side: MaterialStateProperty.all(
@@ -140,7 +143,28 @@ void showToDoListsPopup(BuildContext context, State state) {
 					),
 					onPressed: () {
 						// ignore: invalid_use_of_protected_member
-						state.setState(() => setToDoNote(name));
+						state.setState(() {
+							onConfirm("=ALL=");
+						});
+						// setToDoNote(name);
+						Navigator.of(context).pop();
+					},
+					child: Text("=ALL="),
+			))]),
+
+			// for every list
+			for (String name in currentFile.notes.keys) Row(children: [Expanded(
+				child: TextButton(
+					style: ButtonStyle(
+						side: MaterialStateProperty.all(
+							const BorderSide(width: 1, color: Colors.black),
+						),
+					),
+					onPressed: () {
+						// ignore: invalid_use_of_protected_member
+						state.setState(() {
+							onConfirm(name);
+						});
 						// setToDoNote(name);
 						Navigator.of(context).pop();
 					},
@@ -149,24 +173,24 @@ void showToDoListsPopup(BuildContext context, State state) {
 		],
 	);
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('New Name'),
-        content: column,
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              // Handle cancel
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
+	showDialog(
+		context: context,
+		builder: (BuildContext context) {
+			return AlertDialog(
+				title: const Text('New Name'),
+				content: column,
+				actions: <Widget>[
+					TextButton(
+						child: const Text('Cancel'),
+						onPressed: () {
+							// Handle cancel
+							Navigator.of(context).pop();
+						},
+					),
+				],
+			);
+		},
+	);
 }
 
 void dateSelect(BuildContext context, Function(DateTime?) onConfirm) {
@@ -195,38 +219,46 @@ void dateSelect(BuildContext context, Function(DateTime?) onConfirm) {
 
 void confirmPopup(BuildContext context, String title, String question, Function() onConfirm) {
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title:  Text(title),
-        content: MarkdownBody(data: question),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              // Handle cancel
-              Navigator.of(context).pop();
-            },
-          ),
+	showDialog(
+		context: context,
+		builder: (BuildContext context) {
+			return AlertDialog(
+				title:  Text(title),
+				content: MarkdownBody(data: question),
+				actions: <Widget>[
 					TextButton(
-            child: const Text('Confirm'),
-            onPressed: () {
-              // Handle confirm
+						child: const Text('Cancel'),
+						onPressed: () {
+							// Handle cancel
+							Navigator.of(context).pop();
+						},
+					),
+					TextButton(
+						child: const Text('Confirm'),
+						onPressed: () {
+							// Handle confirm
 							onConfirm();
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
+							Navigator.of(context).pop();
+						},
+					),
+				],
+			);
+		},
+	);
 }
 
 Row flexible(List<Widget> children) {
 	return Row(
 		children: [
 			for (Widget w in children) Flexible(flex: 1, child: w)
+		]
+	);
+}
+
+Row expand(Widget child) {
+	return Row(
+		children: [
+			Expanded(flex: 1, child: child)
 		]
 	);
 }

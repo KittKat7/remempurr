@@ -5,6 +5,15 @@ import 'package:flutter/material.dart';
 const String title = "Remempurr";
 const String filePath = "Documents/Purrductivity/Remempurr/";
 
+const String overviewPageRoute = "/";
+const String notePageRoute = "/note";
+const String aboutPageRoute = "/about";
+const String helpPageRoute = "/help";
+const String errorPageRoute = "/error";
+
+const String version = "0.0.1";
+const int buildID = 1;
+
 bool isDarkMode = false;
 // MaterialColor themeColor = Colors.amber;
 MaterialColor themeColor = Colors.blue;
