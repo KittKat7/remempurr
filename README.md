@@ -22,4 +22,4 @@ due date
 completed date
 repeating frequency
 
-test new setup 1
+test new setup

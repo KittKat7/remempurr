@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:remempurr/classes/rmpr_note.dart';
+import 'package:remempurr/classes/widgets.dart';
+import 'package:remempurr/options.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 
@@ -149,7 +151,7 @@ void showToDoListsPopup(BuildContext context, State state, Function (String) onC
 						// setToDoNote(name);
 						Navigator.of(context).pop();
 					},
-					child: Text("=ALL="),
+					child: const Text("=ALL="),
 			))]),
 
 			// for every list
@@ -260,5 +262,68 @@ Row expand(Widget child) {
 		children: [
 			Expanded(flex: 1, child: child)
 		]
+	);
+}
+
+
+void showMainMenu(BuildContext context) {
+	Row importExportBtns = Row(children: [
+		Expanded(flex: 7, child: GlowButton(
+			onTap: () {
+				// newToDoNote();
+				// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
+				// importToDoLists().then((value) => setState(() {saveToDoNotes();})); //TODO
+			},
+			child: const Text("Import (in dev)"),
+		)),
+		const Expanded(flex: 1, child: SizedBox()),
+		Expanded(flex: 7, child: GlowButton(
+			onTap: () {
+				// newToDoNote();
+				// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
+				// exportToDoLists(); //TODO
+			},
+			child: const Text("Export (in dev)"),
+		)),
+	]);
+
+	GlowButton aboutBtn = GlowButton(
+		onTap: () {
+			Navigator.pushNamed(context, pageRoute['about']!);
+		},
+		child: const Text("About $title"),
+	);
+	
+	Column buttons = Column(
+		mainAxisSize: MainAxisSize.min,
+		children: [
+			GlowButton(
+				child: const Text('Options'),
+				onTap: () => Navigator.popAndPushNamed(context, pageRoute['options']!),
+			),
+			spacer,
+			importExportBtns,
+			spacer,
+			aboutBtn,
+		],
+	);
+	
+	showDialog(
+		context: context,
+		builder: (BuildContext context) {
+			return AlertDialog(
+				title:  const Text('Menu'),
+				content: buttons,
+				actions: <Widget>[
+					TextButton(
+						child: const Text('Cancel'),
+						onPressed: () {
+							// Handle cancel
+							Navigator.of(context).pop();
+						},
+					),
+				],
+			);
+		},
 	);
 }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 // custom
@@ -58,7 +56,7 @@ class _NotePageState extends State<NotePage>
 					def: currentName,
 				);
 				// setState(() => nextToDoNote());
-				//Navigator.pushReplacementNamed(context, notePageRoute);
+				//Navigator.pushReplacementNamed(context, pageRoute['note']);
 			},
 		);
 
@@ -66,7 +64,7 @@ class _NotePageState extends State<NotePage>
 			icon: const Icon(Icons.keyboard_arrow_left),
 			onPressed: () {
 				setState(() => currentName = prevNoteName());
-				//Navigator.pushReplacementNamed(context, notePageRoute);
+				//Navigator.pushReplacementNamed(context, pageRoute['note']);
 			},
 		);
 
@@ -74,7 +72,7 @@ class _NotePageState extends State<NotePage>
 			icon: const Icon(Icons.keyboard_arrow_right),
 			onPressed: () {
 				setState(() => currentName = nextNoteName());
-				//Navigator.pushReplacementNamed(context, notePageRoute);
+				//Navigator.pushReplacementNamed(context, pageRoute['note']);
 			},
 		);
 		

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remempurr/classes/theme.dart';
 // custom
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/classes/rmpr_note.dart';
@@ -72,8 +73,8 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 					onTap: () {
 						// Set the currentNote to the selected note
 						currentName = name;
-						// Navigate to the aboutPageRoute route
-						Navigator.pushNamed(context, notePageRoute).whenComplete(() => setState(() {}));
+						// Navigate to the pageRoute['about'] route
+						Navigator.pushNamed(context, pageRoute['note']!).whenComplete(() => setState(() {}));
 					},
 					note: getRmprNote(name)!,
 					optFunc: () => confirmDel(name),
@@ -169,28 +170,25 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 			return widgets;
 		} // end todoButtons
 
+		IconButton menuBtn = IconButton(
+			onPressed: () => showMainMenu(context),
+			icon: const Icon(Icons.menu)
+		);
+
 		// This method is rerun every time setState is called, 
 		var appBar = AppBar(
 			centerTitle: true,
-			title: const Text("Remempurr: $version"),
+			title: GestureDetector(
+				onTap: () { getColorTheme(context).setColorCyan(); saveOptions();},
+				child: const Text("Remempurr: $version"),
+			),
 			// remove the back button
 			automaticallyImplyLeading: false,
 			// add menu btn
-			leading: /*menuBtn //TODO*/null,
+			leading: menuBtn
 			// actions: [ if (currentName != keyAll) rmprNoteSettingsBtn,/*if (currentName != keyAll) newToDoBtn,*/ ],
 		);
 		
-		// AppBar(
-		// 	// Here we take the value from the MyHomePage object that was created by
-		// 	// the App.build method, and use it to set our appbar title.
-		// 	// also add secret cyan color
-		// 	title: Text(widget.title),
-		// 	// title: GestureDetector(
-		// 	// 	onTap: () { Provider.of<ThemeModel>(context,listen: false).setColorCyan(); saveOptions(); },
-		// 	// 	child: Text(widget.title)
-		// 	// )
-		// );
-		// header text
 		const headerTxt = Text(
 			title,
 			textScaleFactor: 3,
@@ -201,38 +199,13 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 		var showAll = [expand(GlowButton(
 			onTap: () {
 				currentName = keyAll;
-				Navigator.pushNamed(context, notePageRoute).whenComplete(() => setState(() {}));
+				Navigator.pushNamed(context, pageRoute['note']!).whenComplete(() => setState(() {}));
 			},
 			child: const Text("=ALL=", style: TextStyle(fontWeight: FontWeight.bold),),
 		)),spacer];
-
-		var importExportBtns = Row(children: [
-			Expanded(flex: 7, child: GlowButton(
-				onTap: () {
-					// newToDoNote();
-					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
-					// importToDoLists().then((value) => setState(() {saveToDoNotes();})); //TODO
-				},
-				child: const Text("Import (in dev)"),
-			)),
-			const Expanded(flex: 1, child: SizedBox()),
-			Expanded(flex: 7, child: GlowButton(
-				onTap: () {
-					// newToDoNote();
-					// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
-					// exportToDoLists(); //TODO
-				},
-				child: const Text("Export (in dev)"),
-			)),
-		]);
 		
 		// about page button
-		var aboutBtn = GlowButton(
-			onTap: () {
-				Navigator.pushNamed(context, aboutPageRoute);
-			},
-			child: const Text("About $title"),
-		);
+		
 		
 		// display the buttons
 		List<Widget> buttonWidgets = [
@@ -242,11 +215,11 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 			// ]),
 			// spacer,
 			// add about
-			importExportBtns,
-			spacer,
-			Row(children: <Widget>[
-				Expanded(flex: 5, child: aboutBtn),
-			])
+			// importExportBtns,
+			// spacer,
+			// Row(children: <Widget>[
+			// 	Expanded(flex: 5, child: aboutBtn),
+			// ])
 		];
 		
 		// This function creates and returns a Column widget
@@ -254,6 +227,7 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 			// Return a Column widget containing the list of widgets and the buttonWidgets
 			return Column( children: showAll + noteButtons() + buttonWidgets );
 		} // end column
+
 
 		// return the page display
 		return Scaffold(
@@ -273,7 +247,7 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 						RmprNote tmp = newRmprNote(p0);
 						currentName = tmp.name;
 						// setState(() => renameToDoList(getCurrentToDoName(), p0));
-						Navigator.pushNamed(context, notePageRoute).whenComplete(() => setState(() {}));
+						Navigator.pushNamed(context, pageRoute['note']!).whenComplete(() => setState(() {}));
 					}, hint: "To-Do Name");
 					
 					// setState(() { newToDoNote(); });

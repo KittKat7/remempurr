@@ -8,16 +8,17 @@ import 'package:remempurr/pages/note_page.dart';
 import 'package:remempurr/pages/helper_pages.dart';
 import 'package:remempurr/options.dart';
 import 'package:remempurr/pages/overview_page.dart';
+import 'package:remempurr/pages/options_page.dart';
 
 Future<void> main(List<String> args) async {
 	WidgetsFlutterBinding.ensureInitialized();
-	// await loadOptions();
+	await loadOptions();
   await initHive();
 	if (!hasError) {
 		loadToDoNotes();
 	}
-	runApp(ChangeNotifierProvider<ThemeModel>(
-			create: (context) => ThemeModel(),
+	runApp(ChangeNotifierProvider<ColorTheme>(
+			create: (context) => ColorTheme(),
 			child: const MyApp(),
 		)
 	);
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
 	// This widget is the root of your application.
 	@override
 	Widget build(BuildContext context) {
-		Provider.of<ThemeModel>(context).updateTheme();
+		Provider.of<ColorTheme>(context).updateTheme();
 		return MaterialApp(
 			title: 'Remempurr',
 			//theme: Provider.of<ThemeModel>(context).currentTheme,
@@ -44,21 +45,21 @@ class MyApp extends StatelessWidget {
       //   brightness: Brightness.dark,
       //   /* dark theme settings */
       // ),
-			theme: Provider.of<ThemeModel>(context).lightTheme,
-			darkTheme: Provider.of<ThemeModel>(context).darkTheme,
+			theme: Provider.of<ColorTheme>(context).lightTheme,
+			darkTheme: Provider.of<ColorTheme>(context).darkTheme,
       themeMode: ThemeMode.system,
       /* ThemeMode.system to follow system theme,
         ThemeMode.light for light theme,
         ThemeMode.dark for dark theme */
 
-			initialRoute: hasError ? errorPageRoute : overviewPageRoute,
+			initialRoute: hasError ? pageRoute['error'] : pageRoute['overview'],
 			routes: {
-				overviewPageRoute: (context) => const OverviewPage(title: title),
-        notePageRoute: (context) => const NotePage(title: "$title - ToDo"),
-				aboutPageRoute: (context) => const AboutPage(title: "$title - About"),
-				helpPageRoute: (context) => const HelpPage(title: "$title - Help"),
-				errorPageRoute: (context) => const ErrorPage(title: "$title - ERROR")
-				// '/options':(context) => const OptionsPage(title: "$title - Options"),
+				pageRoute['overview']!: (context) => const OverviewPage(title: title),
+        pageRoute['note']!: (context) => const NotePage(title: "$title - ToDo"),
+				pageRoute['about']!: (context) => const AboutPage(title: "$title - About"),
+				pageRoute['help']!: (context) => const HelpPage(title: "$title - Help"),
+				pageRoute['error']!: (context) => const ErrorPage(title: "$title - ERROR"),
+				pageRoute['options']!:(context) => const OptionsPage(title: "$title - Options"),
 			},
 		);
 	} // end build

@@ -197,21 +197,3 @@ class NoteButton extends StatelessWidget {
 		return col;
 	}
 }
-
-
-
-/*
-class Cls {
-	final String var1;
-
-	Cls({required this.var1});
-}
-
-class Cls2 {
-	
-	// I need to modify var1 before it gets sent to the super's constructor
-	Cls2({required super.var1});
-
-}
-
-*/

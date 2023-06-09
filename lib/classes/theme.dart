@@ -12,116 +12,134 @@ List<MaterialColor> themeColorList =
 Brightness mode = Brightness.light;
 
 
-setColor(BuildContext context, MaterialColor color)
-{
-  Provider.of<ThemeModel>(context,listen: false).setColor(color);
-} // end setColor
+// setColor(BuildContext context, MaterialColor color)
+// {
+// 	Provider.of<ColorTheme>(context,listen: false).setColor(color);
+// } // end setColor
 
-setMode(BuildContext context, Brightness mode)
-{
-  Provider.of<ThemeModel>(context,listen: false).setMode(mode);
-} // end setColor
+// setMode(BuildContext context, Brightness mode)
+// {
+// 	Provider.of<ColorTheme>(context,listen: false).setMode(mode);
+// } // end setColor
 
-class ThemeModel with ChangeNotifier{
+class ColorTheme with ChangeNotifier{
 
-  ThemeData currentTheme = ThemeData(
-    primarySwatch: themeColor,
-    brightness: mode,
-  );
+	// ThemeData currentTheme = ThemeData(
+	//   primarySwatch: themeColor,
+	//   brightness: mode,
+	// );
 
 	ThemeData lightTheme = ThemeData(
-    primarySwatch: themeColor,
-    brightness: Brightness.light,
-  );
+		primarySwatch: themeColor,
+		brightness: Brightness.light,
+	);
 
 	ThemeData darkTheme = ThemeData(
-    primarySwatch: themeColor,
-    brightness: Brightness.dark,
-  );
+		primarySwatch: themeColor,
+		brightness: Brightness.dark,
+	);
 
-  updateTheme()
-  {
-    mode = isDarkMode ? Brightness.dark : Brightness.light;
-    currentTheme = ThemeData(
-      primarySwatch: themeColor,
-      brightness: mode,
-    );
-  } // end updateTheme
+	updateTheme()
+	{
+		mode = isDarkMode ? Brightness.dark : Brightness.light;
+		//TODO
+		// currentTheme = ThemeData(
+		// 	primarySwatch: themeColor,
+		// 	brightness: mode,
+		// );
+	} // end updateTheme
 
-  ThemeData getThemeLight()
-  {
-    setMode(Brightness.light);
-    return currentTheme;
-  }
+	// ThemeData getThemeLight()
+	// {
+	// 	setMode(Brightness.light);
+	// 	return currentTheme;
+	// }
 
-  ThemeData getThemeDark()
-  {
-    setMode(Brightness.dark);
-    return currentTheme;
-  }
+	// ThemeData getThemeDark()
+	// {
+	// 	setMode(Brightness.dark);
+	// 	return currentTheme;
+	// }
 
 
-  setMode(Brightness md)
-  {
-    mode = md;
-    isDarkMode = mode == Brightness.dark;
-    currentTheme = ThemeData(
-      primarySwatch: themeColor,
-      brightness: mode,
-    );
-    return notifyListeners();
-  } // end setMode
+	// setMode(Brightness md)
+	// {
+	// 	mode = md;
+	// 	isDarkMode = mode == Brightness.dark;
+	// 	currentTheme = ThemeData(
+	// 		primarySwatch: themeColor,
+	// 		brightness: mode,
+	// 	);
+	// 	return notifyListeners();
+	// } // end setMode
 
-  toggleMode() 
-  {
-    if (isDarkMode) {
-      mode = Brightness.light;
-      isDarkMode = false;
-    } else {
-      mode = Brightness.dark;
-      isDarkMode = true;
-    }
-    currentTheme = ThemeData(
-      primarySwatch: themeColor,
-      brightness: mode,
-    );
-    return notifyListeners();
-  } // end toggleMode
+	// toggleMode() 
+	// {
+	// 	if (isDarkMode) {
+	// 		mode = Brightness.light;
+	// 		isDarkMode = false;
+	// 	} else {
+	// 		mode = Brightness.dark;
+	// 		isDarkMode = true;
+	// 	}
+	// 	currentTheme = ThemeData(
+	// 		primarySwatch: themeColor,
+	// 		brightness: mode,
+	// 	);
+	// 	return notifyListeners();
+	// } // end toggleMode
 
-  setColor(MaterialColor clr)
-  {
-    themeColor = clr;
-    currentTheme = ThemeData(
-      primarySwatch: themeColor,
-      brightness: mode,
-    );
-    return notifyListeners();
-  } // end setColor
+	setColor(MaterialColor? clr)
+	{
+		themeColor = clr??=themeColor;
+		// currentTheme = ThemeData(
+		// 	primarySwatch: themeColor,
+		// 	brightness: mode,
+		// );
+		lightTheme = ThemeData(
+			primarySwatch: themeColor,
+			brightness: Brightness.light,
+		);
+		darkTheme = ThemeData(
+			primarySwatch: themeColor,
+			brightness: Brightness.light,
+		);
+		return notifyListeners();
+	} // end setColor
 
-  setColorCyan()
-  {
-    themeColor = Colors.cyan;
-    currentTheme = ThemeData(
-      primarySwatch: themeColor,
-      brightness: mode,
-    );
-    return notifyListeners();
-  } // end setColor
+	setColorCyan()
+	{
+		themeColor = Colors.cyan;
+		lightTheme = ThemeData(
+			primarySwatch: themeColor,
+			brightness: Brightness.light,
+		);
+		darkTheme = ThemeData(
+			primarySwatch: themeColor,
+			brightness: Brightness.light,
+		);
+		return notifyListeners();
+	} // end setColor
 
-  cycleColor()
-  {
-    if (!themeColorList.contains(themeColor)) {
-      setColor(themeColorList[0]);
-    } else {
-      int index = themeColorList.indexOf(themeColor) + 1;
-      setColor(themeColorList[index >= (themeColorList.length - 1) ? 0 : index]);
-    }
-  } // end cycleColor
+	cycleColor()
+	{
+		if (!themeColorList.contains(themeColor)) {
+			setColor(themeColorList[0]);
+		} else {
+			int index = themeColorList.indexOf(themeColor) + 1;
+			setColor(themeColorList[index >= (themeColorList.length - 1) ? 0 : index]);
+		}
+	} // end cycleColor
 
-  /*
-  ThemeData theme = ThemeData(
-    primarySwatch: defColor,
-    brightness: Brightness.dark,
-  );
-  */
+	/*
+	ThemeData theme = ThemeData(
+		primarySwatch: defColor,
+		brightness: Brightness.dark,
+	);
+	*/
+	
+}
+
+ColorTheme getColorTheme(BuildContext context) {
+	return Provider.of<ColorTheme>(context, listen: false);
 }
