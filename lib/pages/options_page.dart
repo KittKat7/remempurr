@@ -24,8 +24,8 @@ class _OptionsPageState extends State<OptionsPage> {
 	@override
 	Widget build(BuildContext context) {
 		// Define an ElevatedButton called cycleColorBtn that calls cycleColor on the ThemeModel when pressed
-		var cycleColorBtn = ElevatedButton(
-			onPressed: () {
+		var cycleColorBtn = GlowButton(
+			onTap: () {
 				getColorTheme(context).cycleColor();
 				saveOptions();
 			},
@@ -33,8 +33,8 @@ class _OptionsPageState extends State<OptionsPage> {
 		);
 		
 		// Define an ElevatedButton called resetBtn that calls resetOptions and toggleMode on the ThemeModel when pressed
-		var resetBtn = ElevatedButton(
-			onPressed: () {
+		var resetBtn = GlowButton(
+			onTap: () {
 				resetOptions().then((value) => getColorTheme(context).setColor(null));
 				// Provider.of<ThemeModel>(context, listen: false).toggleMode();
 				// saveOptions();

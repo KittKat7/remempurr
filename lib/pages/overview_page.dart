@@ -39,6 +39,10 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 	
 	@override
 	Widget build(BuildContext context) {
+		// if (!themeInit) {
+		// 	setState (() => getColorTheme(context).setColor(null));
+		// }
+		
 		/// Generates a list of widgets for displaying to-do note buttons.
 		/// Each to-do button is displayed as a row with two buttons: one for viewing the note and one for
 		/// deleting the note.

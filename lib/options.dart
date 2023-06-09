@@ -19,7 +19,9 @@ const int buildID = 1;
 
 bool isDarkMode = false;
 // MaterialColor themeColor = Colors.amber;
-MaterialColor themeColor = Colors.blue;
+// MaterialColor themeColor = Colors.blue;
+
+bool themeInit = false;
 
 bool hasError = false;
 String thrownError = "";
@@ -38,16 +40,21 @@ Future<void> saveOptions() async
 // Load the value from shared preferences
 Future<void> loadOptions() async
 {
-	final prefs = await SharedPreferences.getInstance();
-	// isDarkMode = prefs.getBool("isDarkMode") == null ? false : prefs.getBool("isDarkMode")!;
-	int curColor = prefs.getInt("themeColor") == null ? 0 : prefs.getInt("themeColor")!;
-	themeColor = themeColorList[curColor];
+	try {
+		final prefs = await SharedPreferences.getInstance();
+		// isDarkMode = prefs.getBool("isDarkMode") == null ? false : prefs.getBool("isDarkMode")!;
+		int curColor = prefs.getInt("themeColor") == null ? 0 : prefs.getInt("themeColor")!;
+		themeColor = themeColorList[curColor];
+	} catch (e) {
+		loadDefaults();
+	}
 } // end loadOptions
 
 void loadDefaults()
 {
 	// isDarkMode = false;
 	themeColor = Colors.red;
+	saveOptions();
 } // end loadDefaults
 
 Future<void> resetOptions() async

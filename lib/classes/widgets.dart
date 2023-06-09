@@ -121,7 +121,7 @@ class GlowButton extends StatelessWidget {
 				border: Border.all(color: Theme.of(context).canvasColor, width: 2),
 				borderRadius: BorderRadius.circular(10),
 				color: Theme.of(context).canvasColor,
-				boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 3, spreadRadius: 2)]
+				boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 2, spreadRadius: 5)]
 			),
 			margin: const EdgeInsets.only(top: 2, bottom: 2),
 			child: Container(

@@ -32,19 +32,10 @@ class MyApp extends StatelessWidget {
 	// This widget is the root of your application.
 	@override
 	Widget build(BuildContext context) {
-		Provider.of<ColorTheme>(context).updateTheme();
+		// Provider.of<ColorTheme>(context).updateTheme();
+		// getColorTheme(context).setColor(null);
 		return MaterialApp(
-			title: 'Remempurr',
-			//theme: Provider.of<ThemeModel>(context).currentTheme,
-			// theme: Provider.of<ThemeModel>(context).currentTheme,
-      // theme: ThemeData(
-      //   brightness: Brightness.light,
-      //   /* light theme settings */
-      // ),
-      // darkTheme: ThemeData(
-      //   brightness: Brightness.dark,
-      //   /* dark theme settings */
-      // ),
+			title: title,
 			theme: Provider.of<ColorTheme>(context).lightTheme,
 			darkTheme: Provider.of<ColorTheme>(context).darkTheme,
       themeMode: ThemeMode.system,

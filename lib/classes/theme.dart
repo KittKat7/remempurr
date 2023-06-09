@@ -11,6 +11,7 @@ List<MaterialColor> themeColorList =
  [Colors.red, Colors.orange, Colors.yellow, Colors.green, Colors.blue, Colors.purple, Colors.cyan];
 Brightness mode = Brightness.light;
 
+MaterialColor themeColor = Colors.red;
 
 // setColor(BuildContext context, MaterialColor color)
 // {
@@ -102,7 +103,7 @@ class ColorTheme with ChangeNotifier{
 		);
 		darkTheme = ThemeData(
 			primarySwatch: themeColor,
-			brightness: Brightness.light,
+			brightness: Brightness.dark,
 		);
 		return notifyListeners();
 	} // end setColor
@@ -116,7 +117,7 @@ class ColorTheme with ChangeNotifier{
 		);
 		darkTheme = ThemeData(
 			primarySwatch: themeColor,
-			brightness: Brightness.light,
+			brightness: Brightness.dark,
 		);
 		return notifyListeners();
 	} // end setColor
