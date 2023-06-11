@@ -70,11 +70,13 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 			Column leftCol;
 			Column rightCol;
 
-			for (String name in currentFile.notes.keys) {
 
+			for (String name in currentFile.notes.keys) {
+				
 				// Create a button for viewing the note
-				var button = NoteButton(
-					onTap: () {
+				var button = noteButton(
+					context: context,
+					onPressed: () {
 						// Set the currentNote to the selected note
 						currentName = name;
 						// Navigate to the pageRoute['about'] route
@@ -200,8 +202,8 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 		);
 		
 		// show all button
-		var showAll = [expand(GlowButton(
-			onTap: () {
+		var showAll = [expand(StyledOutlinedButton(
+			onPressed: () {
 				currentName = keyAll;
 				Navigator.pushNamed(context, pageRoute['note']!).whenComplete(() => setState(() {}));
 			},

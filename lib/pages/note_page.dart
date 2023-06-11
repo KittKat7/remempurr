@@ -145,8 +145,8 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		);
 		todoItems.add(
 			// container(MarkdownBody(data: "${rmprNote.note}${/*rmprNote.tags.toString()*/""}"))
-			GlowButton(
-				onTap: () {  },
+			StyledOutlinedButton(
+				onPressed: () {  },
 				child: container(
 					TextField(
 						controller: controller,
@@ -324,8 +324,8 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 
 		var item = GestureDetector(
 			onLongPress: () => confirmPopup(context, "Hi", "This is a test...", () => null),
-			child: GlowButton(
-				onTap: () {},
+			child: StyledOutlinedButton(
+				onPressed: () {},
 				child: Container(margin: const EdgeInsets.only(top: 2, bottom: 2), child: itemRow)
 			)
 		);

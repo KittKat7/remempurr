@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:remempurr/classes/rmpr_note.dart';
+import 'package:remempurr/classes/theme.dart';
 import 'package:remempurr/classes/widgets.dart';
 import 'package:remempurr/options.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -268,8 +269,8 @@ Row expand(Widget child) {
 
 void showMainMenu(BuildContext context) {
 	Row importExportBtns = Row(children: [
-		Expanded(flex: 7, child: GlowButton(
-			onTap: () {
+		Expanded(flex: 7, child: StyledOutlinedButton(
+			onPressed: () {
 				// newToDoNote();
 				// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
 				// importToDoLists().then((value) => setState(() {saveToDoNotes();})); //TODO
@@ -277,8 +278,8 @@ void showMainMenu(BuildContext context) {
 			child: const Text("Import (in dev)"),
 		)),
 		const Expanded(flex: 1, child: SizedBox()),
-		Expanded(flex: 7, child: GlowButton(
-			onTap: () {
+		Expanded(flex: 7, child: StyledOutlinedButton(
+			onPressed: () {
 				// newToDoNote();
 				// Navigator.pushNamed(context, '/').whenComplete(() => setState(() {}));
 				// exportToDoLists(); //TODO
@@ -287,8 +288,8 @@ void showMainMenu(BuildContext context) {
 		)),
 	]);
 
-	GlowButton aboutBtn = GlowButton(
-		onTap: () {
+	var aboutBtn = StyledOutlinedButton(
+		onPressed: () {
 			Navigator.pushNamed(context, pageRoute['about']!);
 		},
 		child: const Text("About $title"),
@@ -297,9 +298,9 @@ void showMainMenu(BuildContext context) {
 	Column buttons = Column(
 		mainAxisSize: MainAxisSize.min,
 		children: [
-			GlowButton(
+			StyledOutlinedButton(
 				child: const Text('Options'),
-				onTap: () => Navigator.popAndPushNamed(context, pageRoute['options']!),
+				onPressed: () => Navigator.popAndPushNamed(context, pageRoute['options']!),
 			),
 			spacer,
 			importExportBtns,
@@ -326,4 +327,27 @@ void showMainMenu(BuildContext context) {
 			);
 		},
 	);
+}
+
+StyledOutlinedButton noteButton({required BuildContext context, required RmprNote note, required VoidCallback onPressed, required VoidCallback optFunc}) {
+	Column col = Column(
+			children: [
+				Text(note.name, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+				// const Text("--- --- ---"), // uncomment to add aditional space
+				Divider(color: Theme.of(context).colorScheme.primary),
+				Text(note.note.isEmpty? "---" : note.note, textAlign: TextAlign.center,),
+				// Text(note.toDoItems.toString(), textAlign: TextAlign.center,),
+				Row(children: [
+					Expanded(child: Align(
+						alignment: Alignment.centerLeft,
+						child: Text("  ${note.toDoItems.length} items", style: const TextStyle(fontWeight: FontWeight.bold),),
+					)),
+					Expanded(child: Align(
+						alignment: Alignment.centerRight,
+						child: Material(child: IconButton(onPressed: optFunc, icon: const Icon(Icons.settings))),
+					))
+				]),
+			],
+		);
+	return StyledOutlinedButton(onPressed: onPressed, child: col,);
 }

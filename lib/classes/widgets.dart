@@ -106,22 +106,22 @@ class PaddedScroll extends StatelessWidget
 } // end PaddedScroll
 
 
-class GlowButton extends StatelessWidget {
+class StyledOutlinedButton extends StatelessWidget {
 	final Widget child;
-	final VoidCallback onTap;
+	final VoidCallback onPressed;
 	final Color color;
 
-	const GlowButton({super.key, required this.child, required this.onTap, this.color = Colors.blue});
+	const StyledOutlinedButton({super.key, required this.child, required this.onPressed, this.color = Colors.blue});
 
 	@override
 	Widget build(BuildContext context) {
 
 		Widget content = Container(
 			decoration: BoxDecoration(
-				border: Border.all(color: Theme.of(context).canvasColor, width: 2),
+				border: Border.all(color: Theme.of(context).colorScheme.primary, width: 4),
 				borderRadius: BorderRadius.circular(10),
 				color: Theme.of(context).canvasColor,
-				boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 2, spreadRadius: 5)]
+				// boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 2, spreadRadius: 5)]
 			),
 			margin: const EdgeInsets.only(top: 2, bottom: 2),
 			child: Container(
@@ -132,7 +132,7 @@ class GlowButton extends StatelessWidget {
 		);
 
 		Widget button = GestureDetector(
-			onTap: onTap,
+			onTap: onPressed,
 			child: content
 		);
 
@@ -141,59 +141,98 @@ class GlowButton extends StatelessWidget {
 }
 
 
-class NoteButton extends StatelessWidget {
-	final RmprNote note;
-	final Function() onTap;
-	final Function() optFunc;
+
+
+// class noteButton extends StatelessWidget {
+// 	final RmprNote note;
+// 	final Function() onPressed;
+// 	final Function() optFunc;
 	
-	NoteButton({required this.onTap, required this.note, required this.optFunc});
+// 	noteButton({required this.onPressed, required this.note, required this.optFunc});
 
 
-	@override
-	Widget build(BuildContext context) {
-		GlowButton button = GlowButton(onTap: onTap, child: _buildChild(context, note, optFunc),);
-		// Widget content = Container(
-		// 	decoration: BoxDecoration(
-		// 		border: Border.all(color: Theme.of(context).colorScheme.onBackground, width: 2),
-		// 		borderRadius: BorderRadius.circular(10),
-		// 		color: Theme.of(context).canvasColor,
-		// 		boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 3, spreadRadius: 1)]
-		// 	),
-		// 	margin: const EdgeInsets.only(top: 2, bottom: 2),
-		// 	child: Container(
-		// 		margin: const EdgeInsets.only(top: 4, bottom: 4),
-		// 		alignment: Alignment.center,
-		// 		child: _buildChild(context, note, optFunc),
-		// 	),
-		// );
+// 	@override
+// 	Widget build(BuildContext context) {
+// 		return StyledOutlinedButton(onPressed: onPressed, child: _buildChild(context, note, optFunc),);
+// 		// Widget content = Container(
+// 		// 	decoration: BoxDecoration(
+// 		// 		border: Border.all(color: Theme.of(context).colorScheme.onBackground, width: 2),
+// 		// 		borderRadius: BorderRadius.circular(10),
+// 		// 		color: Theme.of(context).canvasColor,
+// 		// 		boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 3, spreadRadius: 1)]
+// 		// 	),
+// 		// 	margin: const EdgeInsets.only(top: 2, bottom: 2),
+// 		// 	child: Container(
+// 		// 		margin: const EdgeInsets.only(top: 4, bottom: 4),
+// 		// 		alignment: Alignment.center,
+// 		// 		child: _buildChild(context, note, optFunc),
+// 		// 	),
+// 		// );
 
-		// Widget button = GestureDetector(
-		// 	onTap: onTap,
-		// 	child: content
-		// );
+// 		// Widget button = GestureDetector(
+// 		// 	onTap: onTap,
+// 		// 	child: content
+// 		// );
 
-		return button;
-	}
-	static Widget _buildChild(BuildContext context, RmprNote note, Function() optFunc) {
-		Column col = Column(
-			children: [
-				Text(note.name, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
-				// const Text("--- --- ---"), // uncomment to add aditional space
-				Divider(color: Theme.of(context).colorScheme.primary),
-				Text(note.note.isEmpty? "---" : note.note, textAlign: TextAlign.center,),
-				// Text(note.toDoItems.toString(), textAlign: TextAlign.center,),
-				Row(children: [
-					Expanded(child: Align(
-						alignment: Alignment.centerLeft,
-						child: Text("  ${note.toDoItems.length} items", style: const TextStyle(fontWeight: FontWeight.bold),),
-					)),
-					Expanded(child: Align(
-						alignment: Alignment.centerRight,
-						child: Material(child: IconButton(onPressed: optFunc, icon: const Icon(Icons.settings))),
-					))
-				]),
-			],
-		);
-		return col;
-	}
-}
+// 		// return button;
+// 	}
+// 	static Widget _buildChild(BuildContext context, RmprNote note, Function() optFunc) {
+// 		Column col = Column(
+// 			children: [
+// 				Text(note.name, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+// 				// const Text("--- --- ---"), // uncomment to add aditional space
+// 				Divider(color: Theme.of(context).colorScheme.primary),
+// 				Text(note.note.isEmpty? "---" : note.note, textAlign: TextAlign.center,),
+// 				// Text(note.toDoItems.toString(), textAlign: TextAlign.center,),
+// 				Row(children: [
+// 					Expanded(child: Align(
+// 						alignment: Alignment.centerLeft,
+// 						child: Text("  ${note.toDoItems.length} items", style: const TextStyle(fontWeight: FontWeight.bold),),
+// 					)),
+// 					Expanded(child: Align(
+// 						alignment: Alignment.centerRight,
+// 						child: Material(child: IconButton(onPressed: optFunc, icon: const Icon(Icons.settings))),
+// 					))
+// 				]),
+// 			],
+// 		);
+// 		return col;
+// 	}
+// }
+
+// class StyledOutlinedButton extends StatelessWidget{
+// 	final Widget child;
+// 	final VoidCallback onPressed;
+
+// 	const StyledOutlinedButton({super.key, required this.child, required this.onPressed});
+
+// 	@override
+// 	Widget build(BuildContext context) {
+// 		OutlinedButton button = OutlinedButton(
+// 			style: OutlinedButton.styleFrom(
+// 				backgroundColor: Theme.of(context).canvasColor,
+// 				side: BorderSide(
+// 					width: 4,
+// 					color: Theme.of(context).colorScheme.primary,
+// 				)
+// 			),
+// 			onPressed: onPressed,
+// 			child: child,
+// 		);
+
+// 		return button;
+// 	}
+// 	// 	OutlinedButton StyledOutlinedButton({
+// 	// 	required BuildContext context,
+// 	// 	required Function() onPressed,
+// 	// 	required Widget child,
+// 	// 	}) {
+// 	// 	return OutlinedButton(
+// 	// 		style: OutlinedButton.styleFrom(
+// 	// 			backgroundColor: getColorTheme(context)
+// 	// 		),
+// 	// 		onPressed: onPressed,
+// 	// 		child: child,
+// 	// 	);
+// 	// }
+// }
