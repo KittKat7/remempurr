@@ -9,7 +9,6 @@ import 'package:remempurr/pages/helper_pages.dart';
 import 'package:remempurr/options.dart';
 import 'package:remempurr/pages/overview_page.dart';
 import 'package:remempurr/pages/options_page.dart';
-import 'package:remempurr/pages/timeline_page.dart';
 
 Future<void> main(List<String> args) async {
 	WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +47,6 @@ class MyApp extends StatelessWidget {
 			routes: {
 				pageRoute['overview']!: (context) => const OverviewPage(title: title),
         pageRoute['note']!: (context) => const NotePage(title: "$title - ToDo"),
-        pageRoute['timeline']!: (context) => const TimelinePage(title: "$title - ToDo"),
 				pageRoute['about']!: (context) => const AboutPage(title: "$title - About"),
 				pageRoute['help']!: (context) => const HelpPage(title: "$title - Help"),
 				pageRoute['error']!: (context) => const ErrorPage(title: "$title - ERROR"),
