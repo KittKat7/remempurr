@@ -8,6 +8,7 @@ const String filePath = "Documents/Purrductivity/Remempurr/";
 const Map<String, String> pageRoute = {
 	'overview': '/',
 	'note': '/note',
+	'timeline': '/timeline',
 	'about': '/about',
 	'help': '/help',
 	'error': '/error',
@@ -26,6 +27,8 @@ bool themeInit = false;
 bool hasError = false;
 String thrownError = "";
 bool inPrivate = false;
+
+bool isTimeline = false;
 
 // unused theming code
 /* ======= Theme ======= */

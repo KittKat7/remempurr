@@ -64,7 +64,7 @@ class GoBackButton extends StatelessWidget
   @override
   Widget build(BuildContext context)
   {
-    return ElevatedButton(
+    return StyledOutlinedButton(
       onPressed: () {
         Navigator.pop(context);
         exec == null ? exec : null;
@@ -109,18 +109,20 @@ class PaddedScroll extends StatelessWidget
 class StyledOutlinedButton extends StatelessWidget {
 	final Widget child;
 	final VoidCallback onPressed;
-	final Color color;
+	final bool isFilled;
 
-	const StyledOutlinedButton({super.key, required this.child, required this.onPressed, this.color = Colors.blue});
+	const StyledOutlinedButton({super.key, required this.child, required this.onPressed, this.isFilled = false});
 
 	@override
 	Widget build(BuildContext context) {
+		Color outline = isFilled? Theme.of(context).canvasColor : Theme.of(context).colorScheme.primary;
+		Color fill = isFilled? Theme.of(context).colorScheme.primary : Theme.of(context).canvasColor;
 
 		Widget content = Container(
 			decoration: BoxDecoration(
 				border: Border.all(color: Theme.of(context).colorScheme.primary, width: 4),
 				borderRadius: BorderRadius.circular(10),
-				color: Theme.of(context).canvasColor,
+				color: fill,
 				// boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 2, spreadRadius: 5)]
 			),
 			margin: const EdgeInsets.only(top: 2, bottom: 2),

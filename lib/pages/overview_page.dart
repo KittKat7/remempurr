@@ -83,7 +83,13 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 						Navigator.pushNamed(context, pageRoute['note']!).whenComplete(() => setState(() {}));
 					},
 					note: getRmprNote(name)!,
-					optFunc: () => confirmDel(name),
+					timelineFunction: () {
+						// Set the currentNote to the selected note
+						currentName = name;
+						// Navigate to the pageRoute['about'] route
+						Navigator.pushNamed(context, pageRoute['timeline']!).whenComplete(() => setState(() {}));
+					},
+					optionsFunction: () => confirmDel(name),
 					// child: Text(
 					// 	name == getRmprNote(name)!.name?
 					// 		name : "$name - ${getRmprNote(name)!.name}"

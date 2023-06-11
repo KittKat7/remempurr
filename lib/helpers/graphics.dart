@@ -329,7 +329,13 @@ void showMainMenu(BuildContext context) {
 	);
 }
 
-StyledOutlinedButton noteButton({required BuildContext context, required RmprNote note, required VoidCallback onPressed, required VoidCallback optFunc}) {
+StyledOutlinedButton noteButton({
+	required BuildContext context,
+	required RmprNote note,
+	required VoidCallback onPressed,
+	required VoidCallback optionsFunction,
+	required VoidCallback timelineFunction
+	}) {
 	Column col = Column(
 			children: [
 				Text(note.name, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -342,9 +348,13 @@ StyledOutlinedButton noteButton({required BuildContext context, required RmprNot
 						alignment: Alignment.centerLeft,
 						child: Text("  ${note.toDoItems.length} items", style: const TextStyle(fontWeight: FontWeight.bold),),
 					)),
+					// Expanded(child: Align(
+					// 	alignment: Alignment.center,
+					// 	child: Material(child: OutlinedButton(onPressed: timelineFunction, child: const Text("Timeline"))),
+					// )),
 					Expanded(child: Align(
 						alignment: Alignment.centerRight,
-						child: Material(child: IconButton(onPressed: optFunc, icon: const Icon(Icons.settings))),
+						child: Material(child: IconButton(onPressed: optionsFunction, icon: const Icon(Icons.settings))),
 					))
 				]),
 			],

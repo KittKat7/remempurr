@@ -118,7 +118,7 @@ class RmprNote extends HiveObject {
 /// 
 /// This class has a HiveType annotation with a typeId of 2.
 @HiveType(typeId: 2)
-class ToDo extends HiveObject {
+class ToDo extends HiveObject implements Comparable{
 	/// The description of the ToDo item.
 	@HiveField(0)
 	String desc;
@@ -176,6 +176,13 @@ class ToDo extends HiveObject {
 			return "";
 		}
 		return tags[due]!;
+	} // end getDueString
+
+	/// Returns the due date of this ToDo item as a string.
+	///
+	/// If this ToDo item does not have a due date, an empty string is returned.
+	DateTime? getDueDate() {
+		return DateTime.tryParse(tags[due]!);
 	} // end getDueString
 
 	/// Returns `true` if this ToDo item has a due date, `false` otherwise.
@@ -256,8 +263,46 @@ class ToDo extends HiveObject {
 	} // end hasStar
 
 	@override
-	 String toString() {
+	String toString() {
 		return desc;
+	}
+
+	@override
+	int compareTo(other) {
+		if (other is! ToDo) {
+			return 0;
+		}
+		// sort by completed, then starred, then is due, then due date, then desc
+		if (isComplete() != other.isComplete()) {
+			// sort the complete one higher index value (lower on list)
+			if (isComplete() && !other.isComplete()) {
+				return 1;
+			} else {
+				return -1;
+			}
+		} else if (isComplete() && (getCompDate() != other.getCompDate())) {
+			// sort by the due date
+			return -1 * getCompDate()!.compareTo(other.getCompDate()!);
+		} else if (isStarred() != other.isStarred()) {
+			// sort the starred one lower index value (higher on list)
+			if (isStarred() && !other.isStarred()) {
+				return -1;
+			} else {
+				return 1;
+			}
+		} else if (isDue() != other.isDue()) {
+			// sort the due one lower index value (higher on list)
+			if (isDue() && !other.isDue()) {
+				return -1;
+			} else {
+				return 1;
+			}
+		} else if (isDue() && (getDueDate() != other.getDueDate())) {
+			// sort by the due date
+			return getDueDate()!.compareTo(other.getDueDate()!);
+		} else {
+			return desc.compareTo(other.desc);
+		}
 	}
 
 } // end end ToDo

@@ -5,6 +5,7 @@ import 'package:remempurr/classes/widgets.dart';
 import 'package:remempurr/classes/rmpr_note.dart';
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/helpers/helpers.dart';
+import 'package:remempurr/options.dart';
 
 class NotePage extends StatefulWidget
 {
@@ -127,7 +128,25 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	
 	RmprNote rmprNote = getCurrentNote();
 
-	List<ToDo> toDoList = rmprNote.toDoItems;
+	List<ToDo> toDoList = [];
+
+
+	toDoList = rmprNote.toDoItems;
+
+	if (isTimeline) {
+		toDoList.sort();
+	} else {
+		List<ToDo> inComplete = [];
+		List<ToDo> completed = [];
+		for (int i = 0; i < toDoList.length; i++) {
+			if (toDoList[i].isComplete()) {
+				completed.add(toDoList[i]);
+			} else {
+				inComplete.add(toDoList[i]);
+			}
+		}
+		toDoList = inComplete + completed;
+	}
 	
 	// sort the items
 	//toDoList.sortItems();
@@ -169,7 +188,16 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	}
 
 	todoItems.add(
-		container(const MarkdownBody(data: "## **Checklist**"))
+		Row(
+			mainAxisAlignment: MainAxisAlignment.center,
+			children: [
+			container(const MarkdownBody(data: "## **Checklist**")),
+			StyledOutlinedButton(
+				onPressed: () => state.setState(() {isTimeline = !isTimeline;}),
+				isFilled: isTimeline,
+				child: const Text("Timeline"),
+			),
+		])
 	);
 	for (ToDo td in toDoList) {
 		
