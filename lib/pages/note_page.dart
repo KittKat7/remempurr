@@ -131,7 +131,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	List<ToDo> toDoList = [];
 
 
-	toDoList = rmprNote.toDoItems;
+	toDoList = List.from(rmprNote.toDoItems);
 
 	if (isTimeline) {
 		toDoList.sort();
