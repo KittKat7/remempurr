@@ -88,6 +88,7 @@ class _OptionsPageState extends State<OptionsPage> {
 			),
 			body: PaddedScroll(
 				context: context,
+				alignment: Alignment.center,
 				children: children,
 			),
 		);

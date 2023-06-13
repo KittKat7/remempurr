@@ -22,6 +22,7 @@ class _AboutPageState extends State<AboutPage> {
 			),
 			body: PaddedScroll(
 				context: context,
+				alignment: Alignment.center,
 				children: children(context),
 			)
 		);
@@ -63,6 +64,7 @@ class _ErrorPageState extends State<ErrorPage> {
 				title: Text(widget.title),
 			),
 			body: PaddedScroll(
+				alignment: Alignment.center,
 				context: context,
 				children: children(context),
 			)
@@ -106,6 +108,7 @@ class _HelpPageState extends State<HelpPage> {
 			),
 			body: PaddedScroll(
 				context: context,
+				alignment: Alignment.center,
 				children: children(context),
 			)
 		);

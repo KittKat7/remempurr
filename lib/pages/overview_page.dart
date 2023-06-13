@@ -246,13 +246,15 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 			appBar: appBar,
 			body: PaddedScroll(
 				context: context,
-				children: <Widget>[
-				headerTxt,
-				spacer,
-				const Text(""), // sub heading text
-				spacer,
-				column(),
-			]),
+				alignment: Alignment.center,
+					children: <Widget>[
+					headerTxt,
+					spacer,
+					const Text(""), // sub heading text
+					spacer,
+					column(),
+				]
+			),
 			floatingActionButton: FloatingActionButton(
 				onPressed: () {
 					enterTxtPopup(context, title, (p0) {

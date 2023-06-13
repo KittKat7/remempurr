@@ -79,8 +79,9 @@ class PaddedScroll extends StatelessWidget
   // FIELDS
   final BuildContext context;
   final List<Widget> children;
+	final Alignment alignment;
   
-  const PaddedScroll({super.key, required this.context, required this.children});
+  const PaddedScroll({super.key, required this.context, required this.alignment, required this.children});
 
   @override
   Widget build(BuildContext context)
@@ -91,13 +92,15 @@ class PaddedScroll extends StatelessWidget
       vertical: screenSize.height * paddingH,
     );
     var column = Column(
-      children: children,
+				mainAxisAlignment: MainAxisAlignment.center,
+      	children: children,
     );
     var padding = Padding(
       padding: edgeInsets,
       child: column,
     );
-    return Center(
+    return Align(
+			alignment: alignment,
       child: SingleChildScrollView(
         child: padding
       ),

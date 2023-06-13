@@ -103,6 +103,7 @@ class _NotePageState extends State<NotePage>
 			),
 			body: PaddedScroll(
 				context: context,
+				alignment: Alignment.topCenter,
 				children: children,
 			),
 			floatingActionButton: currentName != keyAll? FloatingActionButton(
