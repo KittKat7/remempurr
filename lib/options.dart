@@ -1,3 +1,4 @@
+import 'package:remempurr/classes/undo_redo_manager.dart';
 import 'package:remempurr/classes/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +30,9 @@ String thrownError = "";
 bool inPrivate = false;
 
 bool isTimeline = false;
+
+bool waitingToSave = false;
+Map<String, UndoRedoManager> saveStateTimelines = {};
 
 // unused theming code
 /* ======= Theme ======= */

@@ -161,7 +161,50 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	final TextEditingController controller = TextEditingController(text: rmprNote.note);
 	if (rmprNote.name != keyAll) {
 		todoItems.add(
-			container(const MarkdownBody(data: "## **Note**"))
+			Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+				IconButton(onPressed: () {
+					if (saveStateTimelines[rmprNote.name]!.hasUndo()) {
+						waitingToSave = true;
+						if (saveStateTimelines[rmprNote.name]!.peekUndo().note != getRmprNote(rmprNote.name)!.note &&
+						(!saveStateTimelines[rmprNote.name]!.hasRedo() ||
+						saveStateTimelines[rmprNote.name]!.peekRedo().note != getRmprNote(rmprNote.name)!.note)) {
+							saveStateTimelines[rmprNote.name]!.addData(rmprNote.clone());
+						}
+						RmprNote temp = saveStateTimelines[rmprNote.name]!.undo().clone();
+						if (getRmprNote(rmprNote.name)!.note == temp.note &&
+							getRmprNote(rmprNote.name)!.data == temp.data && saveStateTimelines[rmprNote.name]!.hasUndo()) {
+								temp = saveStateTimelines[rmprNote.name]!.undo().clone();
+						}
+						getRmprNote(rmprNote.name)!.note = temp.note;
+						getRmprNote(rmprNote.name)!.data = temp.data;
+						saveToDoNotes();
+						// ignore: invalid_use_of_protected_member
+						state.setState(() {});
+						waitingToSave = false;
+					}
+					// ignore: invalid_use_of_protected_member
+					state.setState(() {});
+				}, icon: const Icon(Icons.undo)),
+				Text("${saveStateTimelines[rmprNote.name]!.undoStack.length}"),
+				container(const MarkdownBody(data: "## **Note**")),
+				Text("${saveStateTimelines[rmprNote.name]!.redoStack.length}"),
+				IconButton(onPressed: () {
+					if (saveStateTimelines[rmprNote.name]!.hasRedo()) {
+						waitingToSave = true;
+						RmprNote temp = saveStateTimelines[rmprNote.name]!.redo().clone();
+						if (getRmprNote(rmprNote.name)!.note == temp.note &&
+							getRmprNote(rmprNote.name)!.data == temp.data && saveStateTimelines[rmprNote.name]!.hasRedo()) {
+								temp = saveStateTimelines[rmprNote.name]!.redo().clone();
+						}
+						getRmprNote(rmprNote.name)!.note = temp.note;
+						getRmprNote(rmprNote.name)!.data = temp.data;
+						saveToDoNotes();
+						// ignore: invalid_use_of_protected_member
+						state.setState(() {});
+						waitingToSave = false;
+					}
+				}, icon: const Icon(Icons.redo)),
+			])
 		);
 		todoItems.add(
 			// container(MarkdownBody(data: "${rmprNote.note}${/*rmprNote.tags.toString()*/""}"))
@@ -171,6 +214,13 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					TextField(
 						controller: controller,
 						onChanged: (String text) {
+							if (!waitingToSave) {
+								waitingToSave = true;
+								saveStateTimelines[rmprNote.name]!.addData(rmprNote.clone());
+								Future.delayed(const Duration(seconds: 1), () {
+									waitingToSave = false;
+								});
+							}
 							rmprNote.note = text;
 							saveToDoNotes();
 						},
@@ -373,3 +423,46 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	return todoItems;
 } // end displayToDoItems
 
+// Timer? _timer;
+// void _startTimer(String wrd) {
+//     _stopTimer();
+//     _index = 0;
+//     _lastLetter = -1;
+//     _timer = Timer.periodic(Duration(milliseconds: (1000/signSpeed).round()), (timer) {
+//       setState(() {
+//         // if _index is less than the length of the word, display the image for the letter at 
+//         //  _index in the word
+//         if (_index < wrd.length) {
+//           bool offset = false;
+//           imageID = wrd.codeUnitAt(_index) == 32 ? -1 : wrd.codeUnitAt(_index) - 97;
+//           Image? image = imageID == -1 ? null : images[imageID];
+          
+//           if (_lastLetter == imageID && !lastOffset) {
+//             offset = true;
+//             lastOffset = true;
+//           } else {
+//             lastOffset = false;
+//           }
+          
+//           setState(() {
+//             signBox = SignBox(image: image, offset: offset);
+//           });
+          
+//           _lastLetter = imageID;
+//           _index++;
+//         }
+//         // else 
+//         else {
+//           signBox = const SignBox(image: null);
+//           timer.cancel();
+//         }
+//       }); // end setState
+//     });
+//   } // end _starttimer
+
+//   void _stopTimer() {
+//     if (_timer != null) {
+//       _timer!.cancel();
+//       _timer = null;
+//     }
+//   } // end _stopTimer

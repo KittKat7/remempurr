@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:remempurr/classes/undo_redo_manager.dart';
 import 'package:remempurr/options.dart';
 import 'package:universal_html/html.dart';
 
@@ -110,6 +111,15 @@ class RmprNote extends HiveObject {
 		return this;
 	}
 
+	String toString() {
+		return note;
+	}
+
+	void initSaveTimeline() {
+		if (!saveStateTimelines.containsKey(name)) {
+			saveStateTimelines[name] = UndoRedoManager<RmprNote>();
+		}
+	}
 
 } // end RmprNote
 
