@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:remempurr/classes/undo_redo_manager.dart';
 // custom
 import 'package:remempurr/classes/widgets.dart';
 import 'package:remempurr/classes/rmpr_note.dart';
@@ -129,6 +130,8 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	
 	RmprNote rmprNote = getCurrentNote();
 
+	UndoRedoManager undoRedoManager = saveStateTimelines["${rmprNote.name}:note"]!;
+	
 	List<ToDo> toDoList = [];
 
 
@@ -163,20 +166,20 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		todoItems.add(
 			Row(mainAxisAlignment: MainAxisAlignment.center, children: [
 				IconButton(onPressed: () {
-					if (saveStateTimelines[rmprNote.name]!.hasUndo()) {
+					if (undoRedoManager.hasUndo()) {
 						waitingToSave = true;
-						if (saveStateTimelines[rmprNote.name]!.peekUndo().note != getRmprNote(rmprNote.name)!.note &&
-						(!saveStateTimelines[rmprNote.name]!.hasRedo() ||
-						saveStateTimelines[rmprNote.name]!.peekRedo().note != getRmprNote(rmprNote.name)!.note)) {
-							saveStateTimelines[rmprNote.name]!.addData(rmprNote.clone());
+						if (undoRedoManager.peekUndo() != getRmprNote(rmprNote.name)!.note &&
+						(!undoRedoManager.hasRedo() ||
+						undoRedoManager.peekRedo() != getRmprNote(rmprNote.name)!.note)) {
+							undoRedoManager.addData(rmprNote.note);
 						}
-						RmprNote temp = saveStateTimelines[rmprNote.name]!.undo().clone();
-						if (getRmprNote(rmprNote.name)!.note == temp.note &&
-							getRmprNote(rmprNote.name)!.data == temp.data && saveStateTimelines[rmprNote.name]!.hasUndo()) {
-								temp = saveStateTimelines[rmprNote.name]!.undo().clone();
-						}
-						getRmprNote(rmprNote.name)!.note = temp.note;
-						getRmprNote(rmprNote.name)!.data = temp.data;
+						String temp = undoRedoManager.undo();
+						// if (getRmprNote(rmprNote.name)!.note == temp.note &&
+						// 	getRmprNote(rmprNote.name)!.data == temp.data && undoRedoManager!.hasUndo()) {
+						// 		temp = undoRedoManager!.undo().clone();
+						// }
+						getRmprNote(rmprNote.name)!.note = temp;
+						// getRmprNote(rmprNote.name)!.data = temp.data;
 						saveToDoNotes();
 						// ignore: invalid_use_of_protected_member
 						state.setState(() {});
@@ -185,19 +188,19 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					// ignore: invalid_use_of_protected_member
 					state.setState(() {});
 				}, icon: const Icon(Icons.undo)),
-				Text("${saveStateTimelines[rmprNote.name]!.undoStack.length}"),
+				Text("${undoRedoManager.undoStack.length}"),
 				container(const MarkdownBody(data: "## **Note**")),
-				Text("${saveStateTimelines[rmprNote.name]!.redoStack.length}"),
+				Text("${undoRedoManager.redoStack.length}"),
 				IconButton(onPressed: () {
-					if (saveStateTimelines[rmprNote.name]!.hasRedo()) {
+					if (undoRedoManager.hasRedo()) {
 						waitingToSave = true;
-						RmprNote temp = saveStateTimelines[rmprNote.name]!.redo().clone();
-						if (getRmprNote(rmprNote.name)!.note == temp.note &&
-							getRmprNote(rmprNote.name)!.data == temp.data && saveStateTimelines[rmprNote.name]!.hasRedo()) {
-								temp = saveStateTimelines[rmprNote.name]!.redo().clone();
-						}
-						getRmprNote(rmprNote.name)!.note = temp.note;
-						getRmprNote(rmprNote.name)!.data = temp.data;
+						String temp = undoRedoManager.redo();
+						// if (getRmprNote(rmprNote.name)!.note == temp.note &&
+						// 	getRmprNote(rmprNote.name)!.data == temp.data && undoRedoManager!.hasRedo()) {
+						// 		temp = undoRedoManager!.redo().clone();
+						// }
+						getRmprNote(rmprNote.name)!.note = temp;
+						// getRmprNote(rmprNote.name)!.data = temp.data;
 						saveToDoNotes();
 						// ignore: invalid_use_of_protected_member
 						state.setState(() {});
@@ -216,9 +219,10 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 						onChanged: (String text) {
 							if (!waitingToSave) {
 								waitingToSave = true;
-								saveStateTimelines[rmprNote.name]!.addData(rmprNote.clone());
+								undoRedoManager.addData(rmprNote.note);
 								Future.delayed(const Duration(seconds: 1), () {
 									waitingToSave = false;
+									undoRedoManager.addData(rmprNote.note);
 								});
 							}
 							rmprNote.note = text;

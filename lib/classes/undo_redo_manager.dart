@@ -1,7 +1,9 @@
 class UndoRedoManager<E> {
 	List<E> _undoStack;
 	List<E> _redoStack;
-	int _maxSize;
+	E? _curData;
+	bool _initialized = false;
+	final int _maxSize;
 	bool _hasSizeLimit = false;
 
 	UndoRedoManager({int maxSize = 150}) : _maxSize = maxSize, _undoStack = [], _redoStack = [] {
@@ -23,13 +25,35 @@ class UndoRedoManager<E> {
 	}
 
 	void addData(E data) {
-		print("$_undoStack --- $_redoStack");
-		_undoStack.add(data);
-		_redoStack.clear();
-		while (_hasSizeLimit && _size > _maxSize) {
-			_undoStack.removeAt(0);
-		} // end while
-		print("$_undoStack --- $_redoStack");
+		print("1: $_undoStack - - $_curData != $data - - $_redoStack");
+		// if (!hasUndo() || peekUndo() != data) {
+		// 	_undoStack.add(data);
+		// }
+		// _redoStack.clear();
+		if (!_initialized) {
+			_curData = data;
+			_initialized = true;
+		} else {
+			if (!identical(_curData, data)) {
+				print('boink');
+				_undoStack.add(_curData as E);
+				_curData = data;
+				_redoStack.clear();
+			} else {
+				print ("nope");
+			}
+		}
+		print("2: $_undoStack - - $_curData != $data - - $_redoStack ${data.runtimeType}");
+		// if (hasUndo() && data == peekUndo()) {
+		// 	return;
+		// }
+		// print("$_undoStack - - $_lastData - - $_redoStack");
+		// _undoStack.add(data);
+		// _redoStack.clear();
+		// while (_hasSizeLimit && _size > _maxSize) {
+		// 	_undoStack.removeAt(0);
+		// } // end while
+		// print("$_undoStack - - $_lastData - - $_redoStack");
 	} // end addState
 
 	bool hasUndo() {
@@ -37,18 +61,19 @@ class UndoRedoManager<E> {
 	}
 
 	E undo() {
-		print("$_undoStack --- $_redoStack");
-		if (_undoStack.isNotEmpty) {
+		print("$_undoStack - - $_curData - - $_redoStack");
+		if (hasUndo()) {
 			E data = _undoStack.removeLast();
-			_redoStack.add(data);
-		print("$_undoStack --- $_redoStack");
+			_redoStack.add(_curData as E);
+			_curData = data;
+			print("$_undoStack - - $_curData - - $_redoStack");
 			return data;
 		}
 		throw Exception("Undo list empty");
 	}
 
 	E peekUndo() {
-		if (_undoStack.isNotEmpty) {
+		if (hasUndo()) {
 			return _undoStack.last;
 		}
 		throw Exception("Undo list empty");
@@ -59,18 +84,19 @@ class UndoRedoManager<E> {
 	}
 
 	E redo() {
-		print("$_undoStack --- $_redoStack");
-		if (_redoStack.isNotEmpty) {
+		print("$_undoStack - - $_curData - - $_redoStack");
+		if (hasRedo()) {
 			E data = _redoStack.removeLast();
-			_undoStack.add(data);
-		print("$_undoStack --- $_redoStack");
+			_undoStack.add(_curData as E);
+			_curData = data;
+			print("$_undoStack - - $_curData - - $_redoStack");
 			return data;
 		}
 		throw Exception("Redo list empty");
 	}
 
 	E peekRedo() {
-		if (_redoStack.isNotEmpty) {
+		if (hasRedo()) {
 			return _redoStack.last;
 		}
 		throw Exception("Redo list empty");

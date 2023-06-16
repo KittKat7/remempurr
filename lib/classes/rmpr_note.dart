@@ -112,12 +112,12 @@ class RmprNote extends HiveObject {
 	}
 
 	String toString() {
-		return note;
+		return "<$note>";
 	}
 
 	void initSaveTimeline() {
 		if (!saveStateTimelines.containsKey(name)) {
-			saveStateTimelines[name] = UndoRedoManager<RmprNote>();
+			saveStateTimelines["$name:note"] = UndoRedoManager<String>();
 		}
 	}
 
