@@ -8,7 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:remempurr/classes/rmpr_note.dart';
-import 'package:remempurr/classes/rmpr_file.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -57,6 +56,7 @@ void exportToDoLists() async {
 void saveFileOnWeb(String name, String text) {
 	final encodedContent = base64.encode(utf8.encode(text));
 	final dataUri = 'data:text/plain;charset=utf-8;base64,$encodedContent';
+	// ignore: unused_local_variable
 	final anchorElement = html.AnchorElement(href: dataUri)
 		..setAttribute('download', name)
 		..click();

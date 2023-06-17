@@ -42,6 +42,9 @@ class UndoRedoManager<E> {
 			} else {
 				//print ("nope");
 			}
+			while (_hasSizeLimit && _size >= _maxSize) {
+				// _undoStack.removeAt(0); //TODO
+			}
 		}
 		//print("2: $_undoStack - - $_curData != $data - - $_redoStack ${data.runtimeType}");
 		// if (hasUndo() && data == peekUndo()) {

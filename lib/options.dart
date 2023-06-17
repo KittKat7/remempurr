@@ -17,8 +17,8 @@ const Map<String, String> pageRoute = {
 	'options': '/options',
 };
 
-const String version = "0.0.2";
-const int buildID = 2;
+const String version = "1.0.0";
+const int buildID = 10;
 
 String status = 'Now with lolcat!';
 

@@ -193,7 +193,7 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 			centerTitle: true,
 			title: GestureDetector(
 				onTap: () { getColorTheme(context).setColorCyan(); saveOptions();},
-				child: Text("${getLang('title')}: $version"),
+				child: Text("${getLang('title')}: $version${currentLang == 'en_us'? " ($status)" : ""}"),
 			),
 			// remove the back button
 			automaticallyImplyLeading: false,
