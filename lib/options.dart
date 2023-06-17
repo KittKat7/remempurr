@@ -40,7 +40,7 @@ Map<String, UndoRedoManager> saveStateTimelines = {};
 Future<void> saveOptions() async
 {
 	final prefs = await SharedPreferences.getInstance();
-	// prefs.setBool("isDarkMode", isDarkMode);
+	prefs.setBool("isTimeline", isTimeline);
 	prefs.setInt("themeColor", themeColorList.indexOf(themeColor));
 } // end saveOptions
 
@@ -49,7 +49,7 @@ Future<void> loadOptions() async
 {
 	try {
 		final prefs = await SharedPreferences.getInstance();
-		// isDarkMode = prefs.getBool("isDarkMode") == null ? false : prefs.getBool("isDarkMode")!;
+		isTimeline = prefs.getBool("isTimeline") == null ? false : prefs.getBool("isTimeline")!;
 		int curColor = prefs.getInt("themeColor") == null ? 0 : prefs.getInt("themeColor")!;
 		themeColor = themeColorList[curColor];
 	} catch (e) {
@@ -59,7 +59,7 @@ Future<void> loadOptions() async
 
 void loadDefaults()
 {
-	// isDarkMode = false;
+	isTimeline = false;
 	themeColor = Colors.red;
 	saveOptions();
 } // end loadDefaults

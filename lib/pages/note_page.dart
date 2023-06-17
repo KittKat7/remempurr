@@ -248,7 +248,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 			children: [
 			container(const MarkdownBody(data: "## **Checklist**")),
 			StyledOutlinedButton(
-				onPressed: () => state.setState(() {isTimeline = !isTimeline;}),
+				onPressed: () => state.setState(() {isTimeline = !isTimeline; saveOptions();}),
 				isFilled: isTimeline,
 				child: const Text("Timeline"),
 			),
