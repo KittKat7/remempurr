@@ -4,6 +4,7 @@ import 'package:remempurr/classes/theme.dart';
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/classes/rmpr_note.dart';
 import 'package:remempurr/classes/widgets.dart';
+import 'package:remempurr/helpers/helpers.dart';
 import 'package:remempurr/options.dart';
 
 /* ========== HOME PAGE ========== */
@@ -67,8 +68,8 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 			List<Widget> noteBtns = [];
 			List<Widget> leftList = [];
 			List<Widget> rightList = [];
-			Column leftCol;
-			Column rightCol;
+			// Column leftCol;
+			// Column rightCol;
 
 
 			for (String name in currentFile.notes.keys) {
@@ -151,8 +152,8 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 				noteBtns.add(button);
 			} // end for
 
-			leftCol = Column(children: [for (var item in leftList) item]);
-			rightCol = Column(children: [for (var item in rightList) item]);
+			// leftCol = Column(children: [for (var item in leftList) item]);
+			// rightCol = Column(children: [for (var item in rightList) item]);
 			List<Widget> tmpCol = [];
 			for (var item in noteBtns) {
 				tmpCol.add(item);

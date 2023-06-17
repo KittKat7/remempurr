@@ -58,3 +58,8 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# vscode
+/.vscode*
+
+/.*

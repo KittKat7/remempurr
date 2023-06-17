@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:remempurr/classes/to_do.dart';
 import 'package:remempurr/classes/undo_redo_manager.dart';
 // custom
 import 'package:remempurr/classes/widgets.dart';
@@ -246,11 +247,12 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		Row(
 			mainAxisAlignment: MainAxisAlignment.center,
 			children: [
-			container(const MarkdownBody(data: "## **Checklist**")),
+			container(MarkdownBody(data: getLang('checklist'))),
 			StyledOutlinedButton(
+				// ignore: invalid_use_of_protected_member
 				onPressed: () => state.setState(() {isTimeline = !isTimeline; saveOptions();}),
 				isFilled: isTimeline,
-				child: const Text("Timeline"),
+				child: Text(getLang('timeline')),
 			),
 		])
 	);
@@ -272,9 +274,14 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		var description = GestureDetector(
 			onTap: () => enterTxtPopup(
 				context, 
-				"Change To Do", 
-				// ignore: invalid_use_of_protected_member
-				(text) {state.setState(() {td.desc = text.trim(); saveToDoNotes();});},
+				getLang('change_to-do'), 
+				(text) {
+					if (text.trim().isEmpty) {
+						return;
+					} // end empty text check
+					// ignore: invalid_use_of_protected_member
+					state.setState(() {td.desc = text.trim(); saveToDoNotes();});
+				},
 				def: td.desc,
 			),
 			child: MarkdownBody(data: "${td.isComplete()? "~~" : ""}${td.isStarred()? "**" : ""}"
@@ -301,16 +308,16 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					dateSelect(
 						context, 
 						// ignore: invalid_use_of_protected_member
-						(date) => state.setState(() => td.setDueDate(date))
+						(date) => state.setState(() {td.setDueDate(date); saveToDoNotes();})
 					);
 				},
 				onLongPress: () {
 					confirmPopup(
 						context, 
-						"Remove Due Date", 
-						"Pressing \"Confirm\" will remove the due date for  \n\"$shortDescription\"", 
+						getLang('remove_due_date'), 
+						getLang('msg_confirm_remove_due_date', params: [shortDescription]), 
 						// ignore: invalid_use_of_protected_member
-						() => state.setState(() => td.clearDueDate())
+						() => state.setState(() {td.clearDueDate(); saveToDoNotes();})
 					);
 				},
 				child: Text(

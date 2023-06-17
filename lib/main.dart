@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // custom
-import 'package:remempurr/classes/rmpr_note.dart';
+// import 'package:remempurr/classes/rmpr_note.dart';
 import 'package:remempurr/classes/theme.dart';
+import 'package:remempurr/helpers/helpers.dart';
 import 'package:remempurr/options.dart';
 // pages
 import 'package:remempurr/pages/note_page.dart';

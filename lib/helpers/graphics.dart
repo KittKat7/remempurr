@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:remempurr/classes/rmpr_note.dart';
-import 'package:remempurr/classes/theme.dart';
+// import 'package:remempurr/classes/theme.dart';
 import 'package:remempurr/classes/widgets.dart';
+import 'package:remempurr/helpers/helpers.dart';
 import 'package:remempurr/options.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 

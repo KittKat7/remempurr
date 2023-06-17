@@ -1,39 +1,39 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'rmpr_note.dart';
+part of 'rmpr_file.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class RmprNoteAdapter extends TypeAdapter<RmprNote> {
+class RmprFileAdapter extends TypeAdapter<RmprFile> {
   @override
-  final int typeId = 1;
+  final int typeId = 0;
 
   @override
-  RmprNote read(BinaryReader reader) {
+  RmprFile read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return RmprNote(
+    return RmprFile(
       name: fields[0] as String,
-      note: fields[1] as String,
-      data: (fields[2] as Map).cast<String, dynamic>(),
+      path: fields[1] as String,
+      notes: (fields[2] as Map).cast<String, RmprNote>(),
       tags: (fields[3] as Map).cast<String, String>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, RmprNote obj) {
+  void write(BinaryWriter writer, RmprFile obj) {
     writer
       ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.note)
+      ..write(obj.path)
       ..writeByte(2)
-      ..write(obj.data)
+      ..write(obj.notes)
       ..writeByte(3)
       ..write(obj.tags);
   }
@@ -44,7 +44,7 @@ class RmprNoteAdapter extends TypeAdapter<RmprNote> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RmprNoteAdapter &&
+      other is RmprFileAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:remempurr/classes/rmpr_note.dart';
 // custom
 import 'package:remempurr/helpers/graphics.dart';
 

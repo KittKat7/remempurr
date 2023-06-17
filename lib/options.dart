@@ -1,7 +1,7 @@
 import 'package:remempurr/classes/undo_redo_manager.dart';
 import 'package:remempurr/classes/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:remempurr/lang/en_us.dart';
+import 'package:remempurr/lang/lang.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String title = "Remempurr";
@@ -10,7 +10,7 @@ const String filePath = "Documents/Purrductivity/Remempurr/";
 const Map<String, String> pageRoute = {
 	'overview': '/',
 	'note': '/note',
-	'timeline': '/timeline',
+	// 'timeline': '/timeline',
 	'about': '/about',
 	'help': '/help',
 	'error': '/error',
@@ -35,26 +35,29 @@ bool isTimeline = false;
 bool waitingToSave = false;
 Map<String, UndoRedoManager> saveStateTimelines = {};
 
-Map<String, String> lang = getLang();
+Lang lang = Lang(lang: 'en_us');
 
-// unused theming code
+getLang(String k, {List params = const [],}) => lang.getLang(k, params: params);
+
+
+const String keyAll = "=ALL=";
+const String due = "due";
+const String comp = "done";
+
+
 /* ======= Theme ======= */
 // Save the value to shared preferences
-Future<void> saveOptions() async
-{
+Future<void> saveOptions() async {
 	final prefs = await SharedPreferences.getInstance();
 	prefs.setBool("isTimeline", isTimeline);
-	print("${prefs.getBool("isTimeline")}-----");
 	prefs.setInt("themeColor", themeColorList.indexOf(themeColor));
 } // end saveOptions
 
 // Load the value from shared preferences
-Future<void> loadOptions() async
-{
+Future<void> loadOptions() async {
 	try {
 		final prefs = await SharedPreferences.getInstance();
 		isTimeline = prefs.getBool("isTimeline") == null ? false : prefs.getBool("isTimeline")!;
-		print("${prefs.getBool("isTimeline")}-----");
 		int curColor = prefs.getInt("themeColor") == null ? 0 : prefs.getInt("themeColor")!;
 		themeColor = themeColorList[curColor];
 	} catch (e) {
@@ -62,15 +65,13 @@ Future<void> loadOptions() async
 	}
 } // end loadOptions
 
-void loadDefaults()
-{
+void loadDefaults() {
 	isTimeline = false;
 	themeColor = Colors.red;
 	saveOptions();
 } // end loadDefaults
 
-Future<void> resetOptions() async
-{
+Future<void> resetOptions() async {
 	final prefs = await SharedPreferences.getInstance();
 	prefs.clear();
 	loadDefaults();
