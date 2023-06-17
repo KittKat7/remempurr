@@ -118,12 +118,12 @@ class StyledOutlinedButton extends StatelessWidget {
 
 	@override
 	Widget build(BuildContext context) {
-		Color outline = isFilled? Theme.of(context).canvasColor : Theme.of(context).colorScheme.primary;
-		Color fill = isFilled? Theme.of(context).colorScheme.primary : Theme.of(context).canvasColor;
+		Color outline = isFilled? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary;
+		Color fill = isFilled? Theme.of(context).colorScheme.primary.withOpacity(0.6) : Theme.of(context).canvasColor;
 
 		Widget content = Container(
 			decoration: BoxDecoration(
-				border: Border.all(color: Theme.of(context).colorScheme.primary, width: 4),
+				border: Border.all(color: outline, width: 4),
 				borderRadius: BorderRadius.circular(10),
 				color: fill,
 				// boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary, blurRadius: 2, spreadRadius: 5)]

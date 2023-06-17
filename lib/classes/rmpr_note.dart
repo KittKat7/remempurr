@@ -58,9 +58,11 @@ class RmprNote extends HiveObject {
 	@HiveField(1)
 	String note;
 
-	/// A list of ToDo objects associated with the RmprNote.
+	/// The data associated with the RmprNote.\
+	/// `'toDoItems'` => `List<ToDo>`\
+	/// `'timeSheet'` => `List<TimeCard>`\
+	/// `'timeSheet'` => `List<Map<String, dynamic>>`
 	@HiveField(2)
-	// List<ToDo> toDoItems;
 	Map<String, dynamic> data;
 
 	/// A map of tags associated with the RmprNote.

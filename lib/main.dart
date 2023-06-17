@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:remempurr/classes/theme.dart';
 // custom
 import 'package:remempurr/classes/rmpr_note.dart';
-import 'package:remempurr/helpers/helpers.dart';
+import 'package:remempurr/classes/theme.dart';
+import 'package:remempurr/options.dart';
+// pages
 import 'package:remempurr/pages/note_page.dart';
 import 'package:remempurr/pages/helper_pages.dart';
-import 'package:remempurr/options.dart';
 import 'package:remempurr/pages/overview_page.dart';
 import 'package:remempurr/pages/options_page.dart';
 

@@ -25,7 +25,7 @@ class UndoRedoManager<E> {
 	}
 
 	void addData(E data) {
-		print("1: $_undoStack - - $_curData != $data - - $_redoStack");
+		//print("1: $_undoStack - - $_curData != $data - - $_redoStack");
 		// if (!hasUndo() || peekUndo() != data) {
 		// 	_undoStack.add(data);
 		// }
@@ -35,25 +35,25 @@ class UndoRedoManager<E> {
 			_initialized = true;
 		} else {
 			if (!identical(_curData, data)) {
-				print('boink');
+				//print('boink');
 				_undoStack.add(_curData as E);
 				_curData = data;
 				_redoStack.clear();
 			} else {
-				print ("nope");
+				//print ("nope");
 			}
 		}
-		print("2: $_undoStack - - $_curData != $data - - $_redoStack ${data.runtimeType}");
+		//print("2: $_undoStack - - $_curData != $data - - $_redoStack ${data.runtimeType}");
 		// if (hasUndo() && data == peekUndo()) {
 		// 	return;
 		// }
-		// print("$_undoStack - - $_lastData - - $_redoStack");
+		// //print("$_undoStack - - $_lastData - - $_redoStack");
 		// _undoStack.add(data);
 		// _redoStack.clear();
 		// while (_hasSizeLimit && _size > _maxSize) {
 		// 	_undoStack.removeAt(0);
 		// } // end while
-		// print("$_undoStack - - $_lastData - - $_redoStack");
+		// //print("$_undoStack - - $_lastData - - $_redoStack");
 	} // end addState
 
 	bool hasUndo() {
@@ -61,12 +61,12 @@ class UndoRedoManager<E> {
 	}
 
 	E undo() {
-		print("$_undoStack - - $_curData - - $_redoStack");
+		//print("$_undoStack - - $_curData - - $_redoStack");
 		if (hasUndo()) {
 			E data = _undoStack.removeLast();
 			_redoStack.add(_curData as E);
 			_curData = data;
-			print("$_undoStack - - $_curData - - $_redoStack");
+			//print("$_undoStack - - $_curData - - $_redoStack");
 			return data;
 		}
 		throw Exception("Undo list empty");
@@ -84,12 +84,12 @@ class UndoRedoManager<E> {
 	}
 
 	E redo() {
-		print("$_undoStack - - $_curData - - $_redoStack");
+		//print("$_undoStack - - $_curData - - $_redoStack");
 		if (hasRedo()) {
 			E data = _redoStack.removeLast();
 			_undoStack.add(_curData as E);
 			_curData = data;
-			print("$_undoStack - - $_curData - - $_redoStack");
+			//print("$_undoStack - - $_curData - - $_redoStack");
 			return data;
 		}
 		throw Exception("Redo list empty");

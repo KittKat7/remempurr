@@ -40,12 +40,14 @@ dependencies:
   universal_html:
   provider: # used for theming change notify
   shared_preferences:
+  shared_preferences_web:
   hive: # used for current note database
   hive_flutter: # used for current note database
   path_provider: # used for saving files, mobile, desktop?
   file_selector: # selecting file locations for save / load files, desktop
   file_picker: ^4.2.7 # selecting file locations for save / load files, mobile
   permission_handler: 
+  undo_textfield: ^0.0.7
 
 dev_dependencies:
   flutter_test:

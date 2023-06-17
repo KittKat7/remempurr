@@ -129,8 +129,6 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	//ToDoList toDoList = getToDoList(currentName);
 	
 	RmprNote rmprNote = getCurrentNote();
-
-	UndoRedoManager undoRedoManager = saveStateTimelines["${rmprNote.name}:note"]!;
 	
 	List<ToDo> toDoList = [];
 
@@ -163,6 +161,8 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 	}
 	final TextEditingController controller = TextEditingController(text: rmprNote.note);
 	if (rmprNote.name != keyAll) {
+		getCurrentNote().initSaveTimeline();
+		UndoRedoManager undoRedoManager = saveStateTimelines["${rmprNote.name}:note"]!;
 		todoItems.add(
 			Row(mainAxisAlignment: MainAxisAlignment.center, children: [
 				IconButton(onPressed: () {
@@ -188,9 +188,9 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					// ignore: invalid_use_of_protected_member
 					state.setState(() {});
 				}, icon: const Icon(Icons.undo)),
-				Text("${undoRedoManager.undoStack.length}"),
+				// Text("${undoRedoManager.undoStack.length}"),
 				container(const MarkdownBody(data: "## **Note**")),
-				Text("${undoRedoManager.redoStack.length}"),
+				// Text("${undoRedoManager.redoStack.length}"),
 				IconButton(onPressed: () {
 					if (undoRedoManager.hasRedo()) {
 						waitingToSave = true;

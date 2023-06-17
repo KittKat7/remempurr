@@ -1,6 +1,7 @@
 import 'package:remempurr/classes/undo_redo_manager.dart';
 import 'package:remempurr/classes/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:remempurr/lang/en_us.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String title = "Remempurr";
@@ -34,6 +35,8 @@ bool isTimeline = false;
 bool waitingToSave = false;
 Map<String, UndoRedoManager> saveStateTimelines = {};
 
+Map<String, String> lang = getLang();
+
 // unused theming code
 /* ======= Theme ======= */
 // Save the value to shared preferences
@@ -41,6 +44,7 @@ Future<void> saveOptions() async
 {
 	final prefs = await SharedPreferences.getInstance();
 	prefs.setBool("isTimeline", isTimeline);
+	print("${prefs.getBool("isTimeline")}-----");
 	prefs.setInt("themeColor", themeColorList.indexOf(themeColor));
 } // end saveOptions
 
@@ -50,6 +54,7 @@ Future<void> loadOptions() async
 	try {
 		final prefs = await SharedPreferences.getInstance();
 		isTimeline = prefs.getBool("isTimeline") == null ? false : prefs.getBool("isTimeline")!;
+		print("${prefs.getBool("isTimeline")}-----");
 		int curColor = prefs.getInt("themeColor") == null ? 0 : prefs.getInt("themeColor")!;
 		themeColor = themeColorList[curColor];
 	} catch (e) {
