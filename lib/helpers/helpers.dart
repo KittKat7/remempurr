@@ -64,7 +64,7 @@ void saveFileOnWeb(String name, String text) {
 
 // not work on android?
 void saveFileOnDesktop(String name, String text) async {
-	final typeGroup = XTypeGroup(label: 'text', extensions: ['md']);
+	const typeGroup = XTypeGroup(label: 'text', extensions: ['md']);
 	final savePath = await getSavePath(
 		acceptedTypeGroups: [typeGroup], 
 		suggestedName: name
@@ -298,13 +298,13 @@ void loadToDoNotes() {
 		currentFile.notes[defToDoNote.name] = defToDoNote;
 	}
 	// Save the current ToDo notes.
-	saveToDoNotes();
+	saveRmprFile();
 
 } // end loadToDoNotes
 
 
 /// Saves the current ToDo notes to a Hive box.
-void saveToDoNotes() {
+void saveRmprFile() {
 	// Get the Hive box named 'remempurr'.
 	var box = Hive.box('remempurr');
 
@@ -325,7 +325,7 @@ void newToDo(RmprNote note, String text) {
 	// Call the newToDo method on the given RmprNote with the given text.
 	note.newToDo(text);
 	// Save the current ToDo notes.
-	saveToDoNotes();
+	saveRmprFile();
 } // end newToDo
 
 
@@ -338,7 +338,7 @@ void delToDo(ToDo toDo) {
 	// Call the delToDo method on the RmprNote with the same noteName as the ToDo item.
 	getRmprNote(toDo.noteName)!.delToDo(toDo);
 	// Save the current ToDo notes.
-	saveToDoNotes();
+	saveRmprFile();
 } // end delToDo
 
 
@@ -393,7 +393,7 @@ RmprNote newRmprNote(String name) {
   // Create a new RmprNote with the given name and add it to the current file's notes
   currentFile.notes[name] = RmprNote(name: name, note: "", data: {}, tags: {});
   // Save the changes to the current file's notes
-  saveToDoNotes();
+  saveRmprFile();
   // Return the newly created RmprNote
   return currentFile.notes[name]!;
 } // end newRmprNote
@@ -401,12 +401,12 @@ RmprNote newRmprNote(String name) {
 
 /// Removes the [RmprNote] with the given [name] from the [currentFile]'s map of notes.
 /// 
-/// After removing the note, the current ToDo notes are saved by calling [saveToDoNotes].
+/// After removing the note, the current ToDo notes are saved by calling [saveRmprFile].
 void delRmprNote(String name) {
   // Remove the RmprNote with the given name from the currentFile's map of notes.
   currentFile.notes.remove(name);
   // Save the current ToDo notes.
-  saveToDoNotes();
+  saveRmprFile();
 } // end delRmprNote
 
 
@@ -495,7 +495,7 @@ void renameNote(String current, String newName) {
 		currentName = newName;
 	}
 	// save changes
-	saveToDoNotes();
+	saveRmprFile();
 }
 
 

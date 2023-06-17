@@ -65,6 +65,15 @@ double getPaddingH()
 /// Returns a widget for displaying the content of a file located at the given path.
 /// The content is displayed using a MarkdownBody widget.
 Widget readFileWidget(String path) {
+	if (currentLang != 'en_us') {
+		List<String> pathArray = path.split(RegExp(r'[\/\\]'));
+		// List<String> fileNameArray = pathArray.last.split('.');
+		// String fileName = pathArray.last.replaceAll(fileNameArray.last, '$currentLang.$fileNameArray');
+		// for (int i = 0; i < fileNameArray.length - 1; i++) {
+		// 	fileName += fileNameArray[i];
+		// }
+		path = path.replaceAll(pathArray.last, 'lang/$currentLang.${pathArray.last}');
+	}
 	// Use a FutureBuilder to load the file content asynchronously
 	return FutureBuilder(
 		// Load the file content as a string
@@ -295,6 +304,13 @@ void showMainMenu(BuildContext context) {
 		},
 		child: const Text("About $title"),
 	);
+
+	var userManualBtn = StyledOutlinedButton(
+		onPressed: () {
+			Navigator.pushNamed(context, pageRoute['help']!);
+		},
+		child: const Text("userManualBtn $title"),
+	);
 	
 	Column buttons = Column(
 		mainAxisSize: MainAxisSize.min,
@@ -305,6 +321,8 @@ void showMainMenu(BuildContext context) {
 			),
 			spacer,
 			importExportBtns,
+			spacer,
+			userManualBtn,
 			spacer,
 			aboutBtn,
 		],

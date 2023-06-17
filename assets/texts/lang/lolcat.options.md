@@ -1,0 +1,1 @@
+Teh settingz hah control teh GUI settingz 4 teh whoel app. Teh **Cycel Color** opshun cycles thur list ov seven colors (red, oraneg, yellow, green, blue, an purpel). Srsly teh **Toggel Moed** opshun toggles tween liet an dark moed. Srsly teh **Reset** opshun resets teh settingz 2 defaultz. All settingz opshuns r saved automatically.

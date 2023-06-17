@@ -17,8 +17,10 @@ const Map<String, String> pageRoute = {
 	'options': '/options',
 };
 
-const String version = "0.0.1";
-const int buildID = 1;
+const String version = "0.0.2";
+const int buildID = 2;
+
+String status = 'Now with lolcat!';
 
 bool isDarkMode = false;
 // MaterialColor themeColor = Colors.amber;
@@ -35,10 +37,13 @@ bool isTimeline = false;
 bool waitingToSave = false;
 Map<String, UndoRedoManager> saveStateTimelines = {};
 
+String currentLang = 'en_us';
+
+List<String> availableLangs = List.from(langs.keys);
 Lang lang = Lang(lang: 'en_us');
+Lang usLang = Lang(lang: 'en_us');
 
-getLang(String k, {List params = const [],}) => lang.getLang(k, params: params);
-
+getLang(String k,[List p = const []])=>lang.contains(k)? lang.getLang(k, p) : usLang.getLang(k, p);
 
 const String keyAll = "=ALL=";
 const String due = "due";
@@ -51,6 +56,7 @@ Future<void> saveOptions() async {
 	final prefs = await SharedPreferences.getInstance();
 	prefs.setBool("isTimeline", isTimeline);
 	prefs.setInt("themeColor", themeColorList.indexOf(themeColor));
+	prefs.setString('language', currentLang);
 } // end saveOptions
 
 // Load the value from shared preferences
@@ -60,6 +66,8 @@ Future<void> loadOptions() async {
 		isTimeline = prefs.getBool("isTimeline") == null ? false : prefs.getBool("isTimeline")!;
 		int curColor = prefs.getInt("themeColor") == null ? 0 : prefs.getInt("themeColor")!;
 		themeColor = themeColorList[curColor];
+		currentLang = prefs.getString('language') == null? 'en_us' : prefs.getString('language')!;
+		lang.setLang(currentLang);
 	} catch (e) {
 		loadDefaults();
 	}
@@ -68,6 +76,7 @@ Future<void> loadOptions() async {
 void loadDefaults() {
 	isTimeline = false;
 	themeColor = Colors.red;
+	currentLang = 'en_us';
 	saveOptions();
 } // end loadDefaults
 

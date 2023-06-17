@@ -29,7 +29,44 @@ class _OptionsPageState extends State<OptionsPage> {
 				getColorTheme(context).cycleColor();
 				saveOptions();
 			},
-			child: const Text("Cycle Color"),
+			child: Text(getLang('cycle_color')),
+		);
+
+		var changeLangBtn = StyledOutlinedButton(
+			onPressed: () {
+				Column buttons = Column(children: [
+					for (String str in availableLangs)
+						StyledOutlinedButton(
+							onPressed: () {
+								currentLang = str;
+								setState(() => lang.setLang(currentLang));
+								saveOptions();
+								Navigator.pop(context);
+							},
+							isFilled: str == currentLang,
+							child: Text(str),
+						)
+				],);
+				showDialog(
+					context: context,
+					builder: (BuildContext context) {
+						return AlertDialog(
+							title:  Text("${getLang('language')}: $currentLang"),
+							content: SingleChildScrollView(child: buttons),
+							actions: <Widget>[
+								TextButton(
+									child: const Text('Cancel'),
+									onPressed: () {
+										// Handle cancel
+										Navigator.of(context).pop();
+									},
+								),
+							],
+						);
+					},
+				);
+			},
+			child: Text("${getLang('language')}: $currentLang"), //TODO
 		);
 		
 		// Define an ElevatedButton called resetBtn that calls resetOptions and toggleMode on the ThemeModel when pressed
@@ -41,7 +78,7 @@ class _OptionsPageState extends State<OptionsPage> {
 				// used with universal html import, refresh app hopefuly?
 				// html.window.location.reload();
 			},
-			child: const Text("Reset"),
+			child: Text(getLang('reset')),
 		);
 		
 		// Define a Text widget called titleText that displays the title passed into OptionsPage
@@ -56,7 +93,8 @@ class _OptionsPageState extends State<OptionsPage> {
 		var row1 = Row(
 			children: [
 				Expanded(flex: 7, child: cycleColorBtn),
-				// const Expanded(flex: 1, child: SizedBox()),
+				const Expanded(flex: 1, child: SizedBox()),
+				Expanded(flex: 7, child: changeLangBtn),
 			],
 		);
 		

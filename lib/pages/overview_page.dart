@@ -57,8 +57,8 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 				// Delete the selected note
 				confirmPopup(
 					context, 
-					"Confirm Delete",
-					"Pressing \"Confirm\" will **permanently** delete  \n\"$name\"",
+					getLang('confirm_delete'),
+					getLang('msg_confirm_delete', [name]),
 					() => setState(() => delRmprNote(name) )
 				);
 				// Navigate to the '/' route
@@ -193,7 +193,7 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 			centerTitle: true,
 			title: GestureDetector(
 				onTap: () { getColorTheme(context).setColorCyan(); saveOptions();},
-				child: const Text("Remempurr: $version"),
+				child: Text("${getLang('title')}: $version"),
 			),
 			// remove the back button
 			automaticallyImplyLeading: false,
@@ -214,7 +214,7 @@ class _OverviewPageState extends State<OverviewPage> with WidgetsBindingObserver
 				currentName = keyAll;
 				Navigator.pushNamed(context, pageRoute['note']!).whenComplete(() => setState(() {}));
 			},
-			child: const Text("=ALL=", style: TextStyle(fontWeight: FontWeight.bold),),
+			child: const Text(keyAll, style: TextStyle(fontWeight: FontWeight.bold),),
 		)),spacer];
 		
 		// about page button

@@ -54,7 +54,7 @@ class _NotePageState extends State<NotePage>
 			onPressed: () {
 				enterTxtPopup(
 					context,
-					"Rename",
+					getLang('rename'),
 					(text) {setState(() => renameNote(currentName, text));},
 					def: currentName,
 				);
@@ -110,7 +110,7 @@ class _NotePageState extends State<NotePage>
 			),
 			floatingActionButton: currentName != keyAll? FloatingActionButton(
 				onPressed: () {
-					enterTxtPopup(context, "New ToDo", (text) {setState(() => newToDo(getCurrentNote(), text));}, hint: "Something to do");
+					enterTxtPopup(context, getLang('new_to-do'), (text) {setState(() => newToDo(getCurrentNote(), text));}, hint: "Something to do");
 				},
 				child: const Icon(Icons.add),
 			) : null,
@@ -181,7 +181,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 						// }
 						getRmprNote(rmprNote.name)!.note = temp;
 						// getRmprNote(rmprNote.name)!.data = temp.data;
-						saveToDoNotes();
+						saveRmprFile();
 						// ignore: invalid_use_of_protected_member
 						state.setState(() {});
 						waitingToSave = false;
@@ -190,7 +190,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					state.setState(() {});
 				}, icon: const Icon(Icons.undo)),
 				// Text("${undoRedoManager.undoStack.length}"),
-				container(const MarkdownBody(data: "## **Note**")),
+				container(MarkdownBody(data: getLang('hdr_note'))),
 				// Text("${undoRedoManager.redoStack.length}"),
 				IconButton(onPressed: () {
 					if (undoRedoManager.hasRedo()) {
@@ -202,7 +202,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 						// }
 						getRmprNote(rmprNote.name)!.note = temp;
 						// getRmprNote(rmprNote.name)!.data = temp.data;
-						saveToDoNotes();
+						saveRmprFile();
 						// ignore: invalid_use_of_protected_member
 						state.setState(() {});
 						waitingToSave = false;
@@ -227,7 +227,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 								});
 							}
 							rmprNote.note = text;
-							saveToDoNotes();
+							saveRmprFile();
 						},
 						keyboardType: TextInputType.multiline,
 						maxLines: null,
@@ -247,7 +247,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 		Row(
 			mainAxisAlignment: MainAxisAlignment.center,
 			children: [
-			container(MarkdownBody(data: getLang('checklist'))),
+			container(MarkdownBody(data: getLang('hdr_checklist'))),
 			StyledOutlinedButton(
 				// ignore: invalid_use_of_protected_member
 				onPressed: () => state.setState(() {isTimeline = !isTimeline; saveOptions();}),
@@ -263,7 +263,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				// ignore: invalid_use_of_protected_member
 				state.setState(() {
 					td.isComplete()? td.clearCompDate() : td.setCompDate(DateTime.now());
-					saveToDoNotes();
+					saveRmprFile();
 				});
 			}
 		); 
@@ -280,7 +280,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 						return;
 					} // end empty text check
 					// ignore: invalid_use_of_protected_member
-					state.setState(() {td.desc = text.trim(); saveToDoNotes();});
+					state.setState(() {td.desc = text.trim(); saveRmprFile();});
 				},
 				def: td.desc,
 			),
@@ -308,27 +308,27 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					dateSelect(
 						context, 
 						// ignore: invalid_use_of_protected_member
-						(date) => state.setState(() {td.setDueDate(date); saveToDoNotes();})
+						(date) => state.setState(() {td.setDueDate(date); saveRmprFile();})
 					);
 				},
 				onLongPress: () {
 					confirmPopup(
 						context, 
-						getLang('remove_due_date'), 
-						getLang('msg_confirm_remove_due_date', params: [shortDescription]), 
+						getLang('confirm_remove_due_date'), 
+						getLang('msg_confirm_remove_due_date', [shortDescription]), 
 						// ignore: invalid_use_of_protected_member
-						() => state.setState(() {td.clearDueDate(); saveToDoNotes();})
+						() => state.setState(() {td.clearDueDate(); saveRmprFile();})
 					);
 				},
 				child: Text(
-					td.isDue()? "Due: $formattedDueDate" : "Not Due",
+					td.isDue()? getLang('str_due', [formattedDueDate]) : getLang('str_not_due'),
 					style: dueDateTxtStyle,
 				),
 		);
 
 		// compDate
 		String formattedCompDate = td.isComplete()? formatDate(td.getCompDate()) : "";
-		if (formattedCompDate == "") formattedCompDate = "N/A";
+		if (formattedCompDate == "") formattedCompDate = getLang('str_n/a');
 		var compDate = GestureDetector(
 			onTap: () { 
 				/* //TODO
@@ -351,7 +351,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 				*/
 			},
 			child: Text(
-				td.isComplete()? "Done: $formattedCompDate" : "Incomplete",
+				td.isComplete()? getLang('str_completed', [formattedCompDate]) : getLang('str_not_completed'),
 				style: const TextStyle(fontStyle: FontStyle.italic),
 			),
 		);
@@ -362,7 +362,7 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					// ignore: invalid_use_of_protected_member
 					state.setState(() {
 						td.isStarred()? td.star(false) : td.star(true);
-						saveToDoNotes();
+						saveRmprFile();
 					});
 				}, icon: Icon(td.isStarred()? Icons.star : Icons.star_border),
 				padding: EdgeInsets.zero,
@@ -374,8 +374,8 @@ List<Widget> displayToDoItems(BuildContext context, State state) {
 					// ignore: invalid_use_of_protected_member
 					confirmPopup(
 						context, 
-						"Confirm Delete",
-						"Pressing \"Confirm\" will **permanently** delete  \n\"$shortDescription\"",
+						getLang('confirm_delete'),
+						getLang('msg_confirm_delete', [shortDescription]),
 						// ignore: invalid_use_of_protected_member
 						() {state.setState(() => delToDo(td));}
 					);

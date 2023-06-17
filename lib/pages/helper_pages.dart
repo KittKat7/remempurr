@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 // custom
 import 'package:remempurr/helpers/graphics.dart';
 import 'package:remempurr/classes/widgets.dart';
@@ -38,6 +39,7 @@ class _AboutPageState extends State<AboutPage> {
 			),
 			// main about
 			readFileWidget('assets/texts/about.md'),
+			// MarkdownBody(data: getLang('long_about')),
 			// spacer
 			spacer,
 			// back button
@@ -80,7 +82,7 @@ class _ErrorPageState extends State<ErrorPage> {
 				style: const TextStyle(fontWeight: FontWeight.bold),
 			),
 			// main about
-			Text("An Error has occured\n$thrownError"),
+			Text(getLang('msg_error_has_occured', [thrownError])),
 			// spacer
 			spacer,
 			// back button
