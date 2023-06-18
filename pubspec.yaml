@@ -48,6 +48,7 @@ dependencies:
   file_picker: ^4.2.7 # selecting file locations for save / load files, mobile
   permission_handler: 
   undo_textfield: ^0.0.7
+  flutter_local_notifications: # used for local notifications
 
 dev_dependencies:
   flutter_test:

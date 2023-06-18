@@ -13,10 +13,12 @@ import 'package:remempurr/pages/options_page.dart';
 
 Future<void> main(List<String> args) async {
 	WidgetsFlutterBinding.ensureInitialized();
+	initialize();
 	await loadOptions();
   await initHive();
 	if (!hasError) {
 		loadToDoNotes();
+		checkNotifications();
 	}
 	runApp(ChangeNotifierProvider<ColorTheme>(
 			create: (context) => ColorTheme(),

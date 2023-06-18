@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:remempurr/options.dart';
+import "" if (dart.library.html) 'package:remempurr/helpers/web_specific.dart' as web_help;
 
 String formatDate(DateTime? date) {
 	if (date == null) return "null";
@@ -36,6 +37,20 @@ String formatDateString(String str) {
 		"${date.minute.toString().padLeft(2, '0')}";
 		return formattedDate;
 }
+
+void showNotification(String message, {Duration? delay, DateTime? time}) async {
+	
+	switch(platform) {
+		case Platforms.web:
+			if (delay != null) await Future.delayed(delay);
+			if (time != null && delay == null) await Future.delayed(time.difference(DateTime.now()));
+			// if (time != null) print(Future.delayed(DateTime.now().difference(time)));
+			web_help.showNotification(message);
+			break;
+		default:
+			break;
+	}
+} // end showNotification
 
 void exportToDoLists() async {
 	String name = "Remempurr.md";

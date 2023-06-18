@@ -29,7 +29,7 @@ class _OptionsPageState extends State<OptionsPage> {
 				getColorTheme(context).cycleColor();
 				saveOptions();
 			},
-			child: Text(getLang('cycle_color')),
+			child: Text(getString('cycle_color')),
 		);
 
 		var changeLangBtn = StyledOutlinedButton(
@@ -51,7 +51,7 @@ class _OptionsPageState extends State<OptionsPage> {
 					context: context,
 					builder: (BuildContext context) {
 						return AlertDialog(
-							title:  Text("${getLang('language')}: $currentLang"),
+							title:  Text("${getString('language')}: $currentLang"),
 							content: SingleChildScrollView(child: buttons),
 							actions: <Widget>[
 								TextButton(
@@ -66,7 +66,7 @@ class _OptionsPageState extends State<OptionsPage> {
 					},
 				);
 			},
-			child: Text("${getLang('language')}: $currentLang"), //TODO
+			child: Text("${getString('language')}: $currentLang"), //TODO
 		);
 		
 		// Define an ElevatedButton called resetBtn that calls resetOptions and toggleMode on the ThemeModel when pressed
@@ -78,7 +78,7 @@ class _OptionsPageState extends State<OptionsPage> {
 				// used with universal html import, refresh app hopefuly?
 				// html.window.location.reload();
 			},
-			child: Text(getLang('reset')),
+			child: Text(getString('reset')),
 		);
 		
 		// Define a Text widget called titleText that displays the title passed into OptionsPage

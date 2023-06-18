@@ -81,7 +81,7 @@ class _ErrorPageState extends State<ErrorPage> {
 				style: const TextStyle(fontWeight: FontWeight.bold),
 			),
 			// main about
-			Text(getLang('msg_error_has_occured', [thrownError])),
+			Text(getString('msg_error_has_occured', [thrownError])),
 			// spacer
 			spacer,
 			// back button

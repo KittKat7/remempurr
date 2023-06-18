@@ -14,7 +14,7 @@ class Lang {
 		langMap = langs[lang]!;
 	}
 
-	String getLang(String key, [List params = const []]) {
+	String getString(String key, [List params = const []]) {
 		String str = langMap[key]!;
 		for (int i = 0; i < params.length; i++) {
 			str = str.replaceAll('\${$i}', params[i]);

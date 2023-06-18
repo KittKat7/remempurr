@@ -23,3 +23,7 @@ completed date
 repeating frequency
 
 test new setup
+
+TO-DO FEATURES
+
+stopwatch, alarm? with noises?
