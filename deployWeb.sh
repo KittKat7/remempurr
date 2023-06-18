@@ -6,6 +6,10 @@ do
 	key="$1"
 
 	case $key in
+		-d|--dev)
+		path="/mnt/d/Workspace/Sync/web/kittkat-xyz/apps.kittkat.xyz/dev/apps/remempurr/"
+		shift # past argument
+		;;
 		-c|--clean)
 		clean=true
 		shift # past argument

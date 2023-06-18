@@ -4,7 +4,7 @@ import 'package:remempurr/classes/undo_redo_manager.dart';
 import 'package:remempurr/options.dart';
 // import 'package:universal_html/html.dart';
 
-part 'rmpr_note.g.dart';
+part 'adapters/rmpr_note.g.dart';
 
 /// A class representing a RmprNote object that extends HiveObject.
 /// 

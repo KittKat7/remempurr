@@ -1,7 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:remempurr/classes/rmpr_note.dart';
 
-part 'rmpr_file.g.dart';
+part 'adapters/rmpr_file.g.dart';
 
 /// A class representing a RmprFile object that extends HiveObject.
 /// 

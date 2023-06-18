@@ -1,7 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:remempurr/options.dart';
 
-part 'to_do.g.dart';
+part 'adapters/to_do.g.dart';
 
 /// A class representing a ToDo object that extends HiveObject.
 /// 

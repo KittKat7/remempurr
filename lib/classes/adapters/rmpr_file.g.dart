@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'rmpr_file.dart';
+part of '../rmpr_file.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
