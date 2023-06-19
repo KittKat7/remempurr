@@ -13,6 +13,7 @@ Map<String, String> lang = {
 	'confirm_delete': 'Confirm Delete',
 	'cycle_color': 'Cycle Color',
 	'reset': 'Reset',
+	'enable_notifications': 'Enable Notifications',
 	'language': 'Language',
 
 	'hdr_checklist': '## **Checklist**',

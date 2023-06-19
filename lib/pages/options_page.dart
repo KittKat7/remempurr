@@ -69,12 +69,24 @@ class _OptionsPageState extends State<OptionsPage> {
 			child: Text("${getString('language')}: $currentLang"), //TODO
 		);
 		
+		var enableNotifyBtn = StyledOutlinedButton(
+			isFilled: isNotifying,
+			onPressed: () {
+				setState(() => isNotifying = !isNotifying);
+				// Provider.of<ThemeModel>(context, listen: false).toggleMode();
+				saveOptions();
+				// used with universal html import, refresh app hopefuly?
+				// html.window.location.reload();
+			},
+			child: Text(getString('enable_notifications')),
+		);
+		
 		// Define an ElevatedButton called resetBtn that calls resetOptions and toggleMode on the ThemeModel when pressed
 		var resetBtn = StyledOutlinedButton(
 			onPressed: () {
 				resetOptions().then((value) => getColorTheme(context).setColor(null));
 				// Provider.of<ThemeModel>(context, listen: false).toggleMode();
-				// saveOptions();
+				saveOptions();
 				// used with universal html import, refresh app hopefuly?
 				// html.window.location.reload();
 			},
@@ -101,9 +113,9 @@ class _OptionsPageState extends State<OptionsPage> {
 		// Define a Row called row2 that contains resetBtn and some empty space
 		var row2 = Row(
 			children: [
-				Expanded(flex: 7, child: resetBtn),
+				Expanded(flex: 7, child: enableNotifyBtn),
 				const Expanded(flex: 1, child: SizedBox()),
-				const Expanded(flex: 7, child: SizedBox()),
+				Expanded(flex: 7, child: resetBtn),
 			],
 		);
 		

@@ -37,6 +37,7 @@ bool themeInit = false;
 bool hasError = false;
 String thrownError = "";
 bool inPrivate = false;
+bool isNotifying = false;
 
 bool isTimeline = false;
 enum PlatformTypes { web, desktop, mobile }
@@ -86,6 +87,7 @@ void initialize() {
 }
 
 void checkNotifications() {
+	if (!isNotifying) return;
 	for (RmprNote note in currentFile.notes.values) {
 		for (ToDo td in note.data[RmprNote.dataKeys['toDoItems']]) {
 			if (td.isDue() && !td.isComplete()) {
@@ -100,6 +102,7 @@ void checkNotifications() {
 Future<void> saveOptions() async {
 	final prefs = await SharedPreferences.getInstance();
 	prefs.setBool("isTimeline", isTimeline);
+	prefs.setBool("isNotifying", isNotifying);
 	prefs.setInt("themeColor", themeColorList.indexOf(themeColor));
 	prefs.setString('language', currentLang);
 } // end saveOptions
@@ -109,6 +112,7 @@ Future<void> loadOptions() async {
 	try {
 		final prefs = await SharedPreferences.getInstance();
 		isTimeline = prefs.getBool("isTimeline") == null ? false : prefs.getBool("isTimeline")!;
+		isNotifying = prefs.getBool("isNotifying") == null ? false : prefs.getBool("isNotifying")!;
 		int curColor = prefs.getInt("themeColor") == null ? 0 : prefs.getInt("themeColor")!;
 		themeColor = themeColorList[curColor];
 		currentLang = prefs.getString('language') == null? 'en_us' : prefs.getString('language')!;
@@ -120,6 +124,7 @@ Future<void> loadOptions() async {
 
 void loadDefaults() {
 	isTimeline = false;
+	isNotifying = false;
 	themeColor = Colors.red;
 	currentLang = 'en_us';
 	saveOptions();

@@ -39,7 +39,7 @@ String formatDateString(String str) {
 }
 
 void showNotification(String message, {Duration? delay, DateTime? time}) async {
-	
+	if (!isNotifying) return;
 	switch(platform) {
 		case Platforms.web:
 			if (delay != null) await Future.delayed(delay);
